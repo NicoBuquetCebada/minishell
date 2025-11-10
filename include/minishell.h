@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/02 23:41:39 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:41:23 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,47 @@
 # include <readline/readline.h>	/* readline, rl_on_new_line, rl_replace_line, rl_redisplay */
 # include <readline/history.h>  /* add_history, rl_clear_history */
 
-typedef enum e_redir_type
+typedef enum e_role
 {
-	R_IN,           /* <  : stdin from file */
-	R_OUT_TRUNC,    /* >  : stdout to file (truncate) */
-	R_OUT_APPEND,	/* >> : stdout to file (append) */
-	R_HEREDOC       /* << : stdin from heredoc */
-}	t_redir_type;
+	ROLE_HEAD,
+	ROLE_MIDDLE,
+	ROLE_TAIL 
+} t_role;
 
-typedef struct s_redir
+typedef enum e_io_src
 {
-	char			*file;          /* target file for <, >, >> (NULL for heredoc) */
-	t_redir_type	type;           /* redirection kind */
-	char			*heredoc_delim;	/* delimiter token, as given by parser */
-	int				heredoc_expand; /* 1: expand $ in heredoc, 0: do not expand */
-	int				heredoc_fd;     /* prepared read-end fd (executor can fill) */
-	struct s_redir	*next;
-}	t_redir;
+	IO_INHERIT,		/* normal STDIN/STDOUT */
+	IO_PIPE_IN, 	/* reads the previous pipe */
+	IO_PIPE_OUT, 	/* writes in the next pipe */
+	IO_FILE_IN, 	/* < file */
+	IO_FILE_TRUNC, 	/* > file (truncate/create) */
+	IO_FILE_APPEND,	/* >> file (append/create) */
+	IO_FILE_HEREDOC	/* stdin from heredoc tmpfile */
+}	t_io_src;
+
+typedef struct s_iospec
+{
+	t_io_src	in_src;		/* where the input comes from  */
+	char		*in_path;	/* path (if IO_FILE_IN or IO_FILE_HEREDOC) */
+	t_io_src	out_src;	/* where the output goes */
+	char		*out_path;	/* path (if FILE_TRUNC or APPEND) */
+} t_iospec;
 
 typedef struct s_command
 {
-	char			**argv;
-	t_redir			*redirs;        /* linked list of redirections for this command */
-	int				redir_count;    /* convenience counter for executor loops */
-	char			*resolved_path;	/* path optionaly filled by the executor */
-	struct s_command *next;
+	char				**argv;
+	t_iospec			io;
+	t_role				role;
+	int					has_heredoc; 	/* 1 if had heredoc */
+	char				*resolved_path;	/* path optionaly filled by the executor */
+	struct s_command	*next;
 }	t_command;
+
+typedef struct s_exec
+{
+	t_command	*cmds;	/* command list */
+	int			cmd_c;	/* number of commands */
+}	t_exec;
 
 /* Execution context carried by the shell main loop */
 typedef struct s_exec_ctx
