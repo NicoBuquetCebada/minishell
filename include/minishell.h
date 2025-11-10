@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/10 20:41:23 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/10 20:51:36 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ typedef struct s_command
 	t_role				role;
 	int					has_heredoc; 	/* 1 if had heredoc */
 	char				*resolved_path;	/* path optionaly filled by the executor */
-	struct s_command	*next;
 }	t_command;
 
 typedef struct s_exec
