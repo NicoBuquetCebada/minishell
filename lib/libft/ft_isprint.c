@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/17 20:20:30 by nbuquet-          #+#    #+#             */
+/*   Updated: 2024/09/27 14:36:26 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+int	ft_isprint(int c)
 {
-	char	*resolved_path;
-
-	if (ac == 0)
+	if (c >= 32 && c <= 126)
 		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	return (0);
 }

@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/26 19:52:19 by nico              #+#    #+#             */
+/*   Updated: 2025/11/23 18:48:39 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {
-	char	*resolved_path;
+	size_t	i;
+	size_t	dstlen;
 
-	if (ac == 0)
-		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	dstlen = ft_strlen(dst);
+	if (size == 0 || dstlen >= size)
+		return (ft_strlen(src) + size);
+	i = dstlen;
+	while (i < (size - 1) && src[i - dstlen])
+	{
+		dst[i] = src[i - dstlen];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dstlen + ft_strlen(src));
 }

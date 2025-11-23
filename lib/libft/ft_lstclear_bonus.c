@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/29 18:15:36 by nico              #+#    #+#             */
+/*   Updated: 2024/09/30 20:49:57 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+void	ft_lstclear(t_list **lst, void (*del)(void*))
 {
-	char	*resolved_path;
+	t_list	*t1;
+	t_list	*t2;
 
-	if (ac == 0)
-		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	t1 = *lst;
+	while (t1)
+	{
+		del (t1 -> content);
+		t2 = t1 -> next;
+		free(t1);
+		t1 = t2;
+	}
+	*lst = NULL;
 }

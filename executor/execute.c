@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
+/*   Updated: 2025/11/23 17:45:10 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../include/minishell.h"
 
-int main(int ac, char *av[], char *ep[])
+/* int execute(t_exec_ctx *ctx, t_exec *exec)
 {
-	char	*resolved_path;
-
-	if (ac == 0)
-		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
-}
+	
+} */

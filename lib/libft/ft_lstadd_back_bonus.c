@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/29 17:35:40 by nico              #+#    #+#             */
+/*   Updated: 2024/09/29 18:07:20 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+void	ft_lstadd_back(t_list **lst, t_list *new)
 {
-	char	*resolved_path;
+	t_list			*t;
 
-	if (ac == 0)
-		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	if (!lst[0])
+		lst[0] = new;
+	else
+	{
+		t = *lst;
+		while (t -> next != NULL)
+			t = t -> next;
+		t -> next = new;
+	}
 }

@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/26 19:31:23 by nico              #+#    #+#             */
+/*   Updated: 2025/11/23 17:35:04 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+char	*ft_strdup(const char *s)
 {
-	char	*resolved_path;
+	char	*dest;
+	size_t	i;
 
-	if (ac == 0)
-		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	i = 0;
+	dest = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
+	if (!dest)
+		return (NULL);
+	while (s[i])
+	{
+		dest[i] = s[i];
+		i++;
+	}
+	dest[i] = '\0';
+	return (dest);
 }

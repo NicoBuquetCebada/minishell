@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/19 20:16:16 by nico              #+#    #+#             */
+/*   Updated: 2024/09/30 02:11:56 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	char	*resolved_path;
+	unsigned char	*ptrs;
+	size_t			i;
 
-	if (ac == 0)
-		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	ptrs = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		if (ptrs[i] == (unsigned char)c)
+			return (&ptrs[i]);
+		i++;
+	}
+	return (NULL);
 }

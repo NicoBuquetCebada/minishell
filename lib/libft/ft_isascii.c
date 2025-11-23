@@ -1,23 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_isascii.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Created: 2024/09/26 18:50:43 by nico              #+#    #+#             */
+/*   Updated: 2024/09/27 17:57:27 by nico             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char *ep[])
+int	ft_isascii(int c)
 {
-	char	*resolved_path;
-
-	if (ac == 0)
+	if (c >= 0 && c <= 127)
 		return (1);
-	resolved_path = resolve_path(av[1], ep);
-	printf(resolved_path);
+	return (0);
 }

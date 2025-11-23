@@ -6,13 +6,14 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 16:16:15 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/23 19:40:49 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft.h"
 # include <stdio.h>		        /* printf, perror */
 # include <stdlib.h>       		/* malloc, free, getenv, exit */
 # include <unistd.h>    		/* fork, pipe, dup, dup2, execve, access, chdir, write, read, close, isatty, ttyname, ttyslot, getcwd */
@@ -107,5 +108,10 @@ typedef struct s_exec_ctx
 	int				last_status;
 	int				interactive;
 }	t_exec_ctx;
+
+char	*resolve_path(const char *cmd, char **envp);
+int		is_absolute(const char *cmd);
+char	*resolve_absolute(const char *cmd);
+char	*resolve_cmd(const char *cmd, char **envp);
 
 #endif
