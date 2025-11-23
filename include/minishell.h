@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/10 20:51:36 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/23 16:16:15 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,46 +33,79 @@ typedef enum e_role
 	ROLE_TAIL 
 } t_role;
 
-typedef enum e_io_src
+/*
+** Tipo de redirección:
+**   IO_FILE_IN      ->  < file
+**   IO_FILE_TRUNC   ->  > file
+**   IO_FILE_APPEND  ->  >> file
+**   IO_FILE_HEREDOC ->  << delimiter (heredoc)
+**
+** NOTA:
+** - No metemos aquí los pipes ni el "inherit".
+**   - La herencia de STDIN/STDOUT viene dada por defecto si no hay
+**     redirecciones de ese tipo.
+**   - Los pipes los deduces por la posición (role) dentro del pipeline.
+*/
+typedef enum e_io_type
 {
-	IO_INHERIT,		/* normal STDIN/STDOUT */
-	IO_PIPE_IN, 	/* reads the previous pipe */
-	IO_PIPE_OUT, 	/* writes in the next pipe */
-	IO_FILE_IN, 	/* < file */
-	IO_FILE_TRUNC, 	/* > file (truncate/create) */
-	IO_FILE_APPEND,	/* >> file (append/create) */
-	IO_FILE_HEREDOC	/* stdin from heredoc tmpfile */
-}	t_io_src;
+	IO_FILE_IN,
+	IO_FILE_TRUNC,
+	IO_FILE_APPEND,
+	IO_FILE_HEREDOC
+}	t_io_type;
 
+/*
+** A single redirection specification:
+** - type   : redirection type
+** - arg    : filename or heredoc delimiter
+** - expand : for heredocs only (1 = variables expansion, 0 = no expansion)
+*/
 typedef struct s_iospec
 {
-	t_io_src	in_src;		/* where the input comes from  */
-	char		*in_path;	/* path (if IO_FILE_IN or IO_FILE_HEREDOC) */
-	t_io_src	out_src;	/* where the output goes */
-	char		*out_path;	/* path (if FILE_TRUNC or APPEND) */
+	t_io_type	type;
+	char		*arg;
+	int			expand;
 } t_iospec;
 
+/*
+** One command inside a pipeline:
+** - argv			: arguments list (argv[0] is the command name)
+** - ios			: list of redirections in order of appearance
+** - io_c			: number of redirections
+** - role			: pipeline role (HEAD/MIDDLE/TAIL)
+** - resolved_path	: resolved executable path (filled by executor)
+*/
 typedef struct s_command
 {
 	char				**argv;
-	t_iospec			io;
+	t_iospec			*ios;
+	int					io_c;
 	t_role				role;
-	int					has_heredoc; 	/* 1 if had heredoc */
-	char				*resolved_path;	/* path optionaly filled by the executor */
+	char				*resolved_path;
 }	t_command;
 
+/*
+** A complete pipeline:
+** - cmds  : array of commands
+** - cmd_c : number of commands in the pipeline
+*/
 typedef struct s_exec
 {
-	t_command	*cmds;	/* command list */
-	int			cmd_c;	/* number of commands */
+	t_command	*cmds;
+	int			cmd_c;
 }	t_exec;
 
-/* Execution context carried by the shell main loop */
+/*
+** Execution context stored globally:
+** - envp          : modifiable environment array
+** - last_status   : last pipeline exit status (used for $? expansion)
+** - interactive   : 1 if shell is interactive, 0 otherwise
+*/
 typedef struct s_exec_ctx
 {
-	char			**envp;      	/* environment as a modifiable array */
-	int				last_status;	/* last pipeline exit status (used to expand $?) */
-	int				interactive; 	/* 1 if running on an interactive terminal, 0 otherwise */
+	char			**envp;
+	int				last_status;
+	int				interactive;
 }	t_exec_ctx;
 
 #endif
