@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:40:49 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/26 22:02:33 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef enum e_role
 {
 	ROLE_HEAD,
 	ROLE_MIDDLE,
-	ROLE_TAIL 
+	ROLE_TAIL
 } t_role;
 
 /*
@@ -47,13 +47,13 @@ typedef enum e_role
 **     redirecciones de ese tipo.
 **   - Los pipes los deduces por la posición (role) dentro del pipeline.
 */
-typedef enum e_io_type
+typedef enum e_iotype
 {
 	IO_FILE_IN,
 	IO_FILE_TRUNC,
 	IO_FILE_APPEND,
 	IO_FILE_HEREDOC
-}	t_io_type;
+}	t_iotype;
 
 /*
 ** A single redirection specification:
@@ -63,7 +63,7 @@ typedef enum e_io_type
 */
 typedef struct s_iospec
 {
-	t_io_type	type;
+	t_iotype	type;
 	char		*arg;
 	int			expand;
 } t_iospec;
