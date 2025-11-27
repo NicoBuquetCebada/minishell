@@ -6,13 +6,13 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 17:45:10 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/23 20:40:53 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+/* #include "../include/minishell.h"
 
-/* int execute(t_exec_ctx *ctx, t_exec *exec)
+int execute(t_exec_ctx *ctx, t_exec *exec)
 {
 	
 } */

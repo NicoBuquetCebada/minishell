@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:41:10 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/23 20:40:28 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,5 @@ int main(int ac, char *av[], char *ep[])
 		return (1);
 	resolved_path = resolve_path(av[1], ep);
 	printf(resolved_path);
+	free(resolved_path);
 }
