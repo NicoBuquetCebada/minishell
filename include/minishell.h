@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/26 22:02:33 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:03:17 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,26 @@
 # define MINISHELL_H
 
 # include "libft.h"
-# include <stdio.h>		        /* printf, perror */
-# include <stdlib.h>       		/* malloc, free, getenv, exit */
-# include <unistd.h>    		/* fork, pipe, dup, dup2, execve, access, chdir, write, read, close, isatty, ttyname, ttyslot, getcwd */
-# include <fcntl.h>   		   	/* open */
-# include <dirent.h>       		/* opendir, readdir, closedir */
-# include <string.h>       		/* strerror */
-# include <sys/stat.h>  		/* stat, lstat, fstat */
-# include <sys/wait.h>    		/* wait, waitpid, wait3, wait4 */
-# include <signal.h>      		/* signal, sigaction, kill */
-# include <termios.h>    		/* tcsetattr, tcgetattr */
-# include <readline/readline.h>	/* readline, rl_on_new_line, rl_replace_line, rl_redisplay */
+# include <dirent.h>            /* opendir, readdir, closedir */
+# include <fcntl.h>             /* open */
 # include <readline/history.h>  /* add_history, rl_clear_history */
+# include <readline/readline.h> /* readline, rl_on_new_line, rl_replace_line */
+# include <signal.h>            /* signal, sigaction, kill */
+# include <stdio.h>             /* printf, perror */
+# include <stdlib.h>            /* malloc, free, getenv, exit */
+# include <string.h>            /* strerror */
+# include <sys/stat.h>          /* stat, lstat, fstat */
+# include <sys/wait.h>          /* wait, waitpid, wait3, wait4 */
+# include <termios.h>           /* tcsetattr, tcgetattr */
+# include <unistd.h>            /* fork, pipe, dup, dup2, execve, access, chdir,
+	write, read, close, isatty, ttyname, ttyslot, getcwd */
 
 typedef enum e_role
 {
 	ROLE_HEAD,
 	ROLE_MIDDLE,
 	ROLE_TAIL
-} t_role;
+}				t_role;
 
 /*
 ** Tipo de redirección:
@@ -53,7 +54,7 @@ typedef enum e_iotype
 	IO_FILE_TRUNC,
 	IO_FILE_APPEND,
 	IO_FILE_HEREDOC
-}	t_iotype;
+}				t_iotype;
 
 /*
 ** A single redirection specification:
@@ -66,7 +67,7 @@ typedef struct s_iospec
 	t_iotype	type;
 	char		*arg;
 	int			expand;
-} t_iospec;
+}				t_iospec;
 
 /*
 ** One command inside a pipeline:
@@ -78,12 +79,12 @@ typedef struct s_iospec
 */
 typedef struct s_command
 {
-	char				**argv;
-	t_iospec			*ios;
-	int					io_c;
-	t_role				role;
-	char				*resolved_path;
-}	t_command;
+	char		**argv;
+	t_iospec	*ios;
+	size_t		io_c;
+	t_role		role;
+	char		*resolved_path;
+}				t_command;
 
 /*
 ** A complete pipeline:
@@ -93,8 +94,8 @@ typedef struct s_command
 typedef struct s_exec
 {
 	t_command	*cmds;
-	int			cmd_c;
-}	t_exec;
+	size_t		cmd_c;
+}				t_exec;
 
 /*
 ** Execution context stored globally:
@@ -104,14 +105,15 @@ typedef struct s_exec
 */
 typedef struct s_exec_ctx
 {
-	char			**envp;
-	int				last_status;
-	int				interactive;
-}	t_exec_ctx;
+	char		**envp;
+	int			last_status;
+	int			interactive;
+}				t_exec_ctx;
 
-char	*resolve_path(const char *cmd, char **envp);
-int		is_absolute(const char *cmd);
-char	*resolve_absolute(const char *cmd);
-char	*resolve_cmd(const char *cmd, char **envp);
+char			*resolve_path(const char *cmd, char **envp);
+int				is_absolute(const char *cmd);
+char			*resolve_absolute(const char *cmd);
+char			*resolve_cmd(const char *cmd, char **envp);
+int				heredoc_processer(t_exec *exec);
 
 #endif
