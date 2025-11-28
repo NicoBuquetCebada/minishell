@@ -5,6 +5,7 @@ OBJS = $(SRCS:.c=.o)
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -Wunreachable-code -Ofast
+READFLAGS = -lreadline
 
 LIBFTDIR = ../lib/libft
 LIBFT = $(LIBFTDIR)/libft.a
@@ -21,7 +22,7 @@ libft:
 	@$(CC) $(CFLAGS) -o $@ -c $< $(HEADERS)
 
 $(NAME): $(OBJS) $(LIBFT)
-	@$(CC) $(OBJS) $(HEADERS) -o $(NAME) $(LIBFT)
+	@$(CC) $(OBJS) $(HEADERS) $(READFLAGS) -o $(NAME) $(LIBFT)
 
 clean:
 	@rm -rf $(OBJS)

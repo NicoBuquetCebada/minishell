@@ -6,13 +6,13 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:35:50 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/24 20:49:18 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:08:45 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	command_not_found_error(const char *cmd)
+int	command_not_found_error(char *cmd)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
@@ -20,7 +20,7 @@ int	command_not_found_error(const char *cmd)
 	return (127);
 }
 
-int	no_such_file_error(const char *path)
+int	no_such_file_error(char *path)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(path, 2);
@@ -28,7 +28,7 @@ int	no_such_file_error(const char *path)
 	return (127);
 }
 
-int	is_a_directory_error(const char *dir)
+int	is_a_directory_error(char *dir)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(dir, 2);
@@ -36,7 +36,7 @@ int	is_a_directory_error(const char *dir)
 	return (126);
 }
 
-int	permission_denied_error(const char *file)
+int	permission_denied_error(char *file)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(file, 2);

@@ -6,36 +6,42 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 21:45:15 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/27 01:08:49 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:18:32 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int g_heredoc_id = 0;
+static int	g_heredoc_id = 0;
+static int	filein_converter(t_iospec *io);
+static char	*till_delimiter(t_iospec io);
+static char	*new_tmpfile(char *content);
+static char	*tmpfile_path(void);
 
-void	heredoc_processer(t_exec_ctx *ctx, t_exec *cmds)
+int	heredoc_processer(t_exec *exec)
 {
 	size_t		i;
 	size_t		j;
-	t_iospec	io;
+	t_iospec	*io;
 
 	i = 0;
-	while (i < cmds->cmd_c)
+	while (i < exec->cmd_c)
 	{
 		j = 0;
-		while (j < cmds->cmds[i].io_c)
+		while (j < exec->cmds[i].io_c)
 		{
-			io = cmds->cmds[i].ios[j];
-			if (io.type == IO_FILE_HEREDOC)
-				filein_converter(&io);
+			io = &exec->cmds[i].ios[j];
+			if (io->type == IO_FILE_HEREDOC)
+				if (filein_converter(io) != 0)
+					return (-1);
 			j++;
 		}
 		i++;
 	}
+	return (0);
 }
 
-int	filein_converter(t_iospec *io)
+static int	filein_converter(t_iospec *io)
 {
 	char	*content;
 	char	*path;
@@ -50,9 +56,10 @@ int	filein_converter(t_iospec *io)
 	free(io->arg);
 	io->arg = path;
 	io->type = IO_FILE_IN;
+	return (0);
 }
 
-char	*till_delimiter(t_iospec io)
+static char	*till_delimiter(t_iospec io)
 {
 	int		del_len;
 	char	*line;
@@ -78,7 +85,7 @@ char	*till_delimiter(t_iospec io)
 	}
 }
 
-char	*new_tmpfile(char *content)
+static char	*new_tmpfile(char *content)
 {
 	int		fd;
 	char	*path;
@@ -94,7 +101,7 @@ char	*new_tmpfile(char *content)
 	return (path);
 }
 
-char	*tmpfile_path(void)
+static char	*tmpfile_path(void)
 {
 	char	*id;
 	char	*name;
