@@ -6,11 +6,14 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 11:25:45 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/29 12:04:14 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/29 20:28:29 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	redir_stdin(t_iospec io);
+static int	redir_stdout(t_iospec io);
 
 int	process_redirs(t_command *cmd)
 {
@@ -54,6 +57,8 @@ static int	redir_stdout(t_iospec io)
 		fd = open(io.arg, O_CREAT | O_WRONLY | O_APPEND, 0644);
 	else if (io.type == IO_FILE_TRUNC)
 		fd = open(io.arg, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	else
+		fd = -1;
 	if (fd < 0)
 		return (-1);
 	if (dup2(fd, STDOUT_FILENO) == -1)

@@ -6,11 +6,17 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/29 12:08:25 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/29 20:33:36 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
+static int		pipe_init(t_command *cmd, int pipe_fd[2]);
+static void		connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
+static void		close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
+static void		update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
 
 int	execute(t_exec_ctx *ctx, t_exec *exec)
 {
@@ -21,7 +27,7 @@ int	execute(t_exec_ctx *ctx, t_exec *exec)
 	read_fd = -1;
 	pids = malloc(exec->cmd_c * sizeof(pid_t));
 	if (!pids)
-		return (NULL);
+		return (-1);
 	i = 0;
 	while (i < exec->cmd_c)
 	{
@@ -31,6 +37,7 @@ int	execute(t_exec_ctx *ctx, t_exec *exec)
 		i++;
 	}
 	// Esperar a los hijos y actualizar $?
+	free(pids);
 	return (0);
 }
 
@@ -50,9 +57,7 @@ static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 	{
 		connect_childs(cmd, read_fd, pipe_fd);
 		close_fds(cmd, read_fd, pipe_fd);
-		if (process_redirs(cmd) == -1)
-			exit(1);
-		// execve() y builtins
+		execute_cmd(ctx, cmd);
 		exit(0);
 	}
 	update_read_fd(cmd, read_fd, pipe_fd);
