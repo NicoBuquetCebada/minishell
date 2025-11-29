@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/28 20:11:38 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/29 12:08:46 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,11 @@ int				is_absolute(const char *cmd);
 char			*resolve_absolute(const char *cmd);
 char			*resolve_cmd(const char *cmd, char **envp);
 
-int				heredoc_processer(t_exec *exec);
+int				process_heredocs(t_exec *exec);
 
 int				is_builtin(char *cmd);
 int				is_builtin_statefull(t_exec *exec);
+
+int				process_redirs(t_command *cmd);
 
 #endif

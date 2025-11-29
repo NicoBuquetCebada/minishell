@@ -6,19 +6,19 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 21:45:15 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/28 18:18:32 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/29 12:05:48 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	g_heredoc_id = 0;
-static int	filein_converter(t_iospec *io);
+static int	convert_to_filein(t_iospec *io);
 static char	*till_delimiter(t_iospec io);
 static char	*new_tmpfile(char *content);
 static char	*tmpfile_path(void);
 
-int	heredoc_processer(t_exec *exec)
+int	process_heredocs(t_exec *exec)
 {
 	size_t		i;
 	size_t		j;
@@ -32,7 +32,7 @@ int	heredoc_processer(t_exec *exec)
 		{
 			io = &exec->cmds[i].ios[j];
 			if (io->type == IO_FILE_HEREDOC)
-				if (filein_converter(io) != 0)
+				if (convert_to_filein(io) != 0)
 					return (-1);
 			j++;
 		}
@@ -41,7 +41,7 @@ int	heredoc_processer(t_exec *exec)
 	return (0);
 }
 
-static int	filein_converter(t_iospec *io)
+static int	convert_to_filein(t_iospec *io)
 {
 	char	*content;
 	char	*path;
@@ -72,7 +72,7 @@ static char	*till_delimiter(t_iospec io)
 	{
 		line = readline("> ");
 		if (!line)
-			return(dst);
+			return (dst);
 		if (ft_strncmp(line, io.arg, del_len) == 0)
 			return (free(line), dst);
 		tmp = dst;

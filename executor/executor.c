@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
+/*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/29 11:19:09 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/29 12:08:25 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int execute(t_exec_ctx *ctx, t_exec *exec)
+int	execute(t_exec_ctx *ctx, t_exec *exec)
 {
 	size_t	i;
 	int		read_fd;
@@ -50,7 +50,8 @@ static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 	{
 		connect_childs(cmd, read_fd, pipe_fd);
 		close_fds(cmd, read_fd, pipe_fd);
-		
+		if (process_redirs(cmd) == -1)
+			exit(1);
 		// execve() y builtins
 		exit(0);
 	}
@@ -96,7 +97,7 @@ static void	close_fds(t_command *cmd, int *read_fd, int pipe_fd[2])
 	}
 }
 
-static void update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2])
+static void	update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2])
 {
 	if (*read_fd != -1)
 		close(*read_fd);
