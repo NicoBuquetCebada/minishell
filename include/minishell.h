@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/28 18:03:17 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/11/28 20:11:38 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,23 +30,17 @@
 
 typedef enum e_role
 {
-	ROLE_HEAD,
-	ROLE_MIDDLE,
-	ROLE_TAIL
+	HEAD,
+	MIDDLE,
+	TAIL
 }				t_role;
 
 /*
-** Tipo de redirección:
+** Type of redirection:
 **   IO_FILE_IN      ->  < file
 **   IO_FILE_TRUNC   ->  > file
 **   IO_FILE_APPEND  ->  >> file
 **   IO_FILE_HEREDOC ->  << delimiter (heredoc)
-**
-** NOTA:
-** - No metemos aquí los pipes ni el "inherit".
-**   - La herencia de STDIN/STDOUT viene dada por defecto si no hay
-**     redirecciones de ese tipo.
-**   - Los pipes los deduces por la posición (role) dentro del pipeline.
 */
 typedef enum e_iotype
 {
@@ -114,6 +108,10 @@ char			*resolve_path(const char *cmd, char **envp);
 int				is_absolute(const char *cmd);
 char			*resolve_absolute(const char *cmd);
 char			*resolve_cmd(const char *cmd, char **envp);
+
 int				heredoc_processer(t_exec *exec);
+
+int				is_builtin(char *cmd);
+int				is_builtin_statefull(t_exec *exec);
 
 #endif
