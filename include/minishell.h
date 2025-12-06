@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/29 20:29:15 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/06 14:47:45 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,5 +117,9 @@ int				is_builtin_statefull(t_exec *exec);
 int				execute(t_exec_ctx *ctx, t_exec *exec);
 int				process_redirs(t_command *cmd);
 void			execute_cmd(t_exec_ctx *ctx, t_command *cmd);
+int				pipe_init(t_command *cmd, int pipe_fd[2]);
+void			connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
+void			close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
+void			update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
 
 #endif

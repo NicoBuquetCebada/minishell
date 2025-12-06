@@ -6,17 +6,14 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/29 20:33:36 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/06 15:04:03 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
-static int		pipe_init(t_command *cmd, int pipe_fd[2]);
-static void		connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
-static void		close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
-static void		update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
+static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
 
 int	execute(t_exec_ctx *ctx, t_exec *exec)
 {
@@ -31,12 +28,12 @@ int	execute(t_exec_ctx *ctx, t_exec *exec)
 	i = 0;
 	while (i < exec->cmd_c)
 	{
-		pids[i] = spawn_cmd(ctx, &exec->cmds[i], &read_fd);
+		pids[i] = spawn_cmd(ctx, &exec->cmds[i], &read_fd); // Ejecutar builtins. ¿En padre o en hijo?
 		if (pids[i] == -1)
-			return (-1);
+			return (wait_pids(ctx, pids, i), free(pids), -1);
 		i++;
 	}
-	// Esperar a los hijos y actualizar $?
+	wait_pids(ctx, pids, exec->cmd_c);
 	free(pids);
 	return (0);
 }
@@ -64,53 +61,22 @@ static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 	return (pid);
 }
 
-static int	pipe_init(t_command *cmd, int pipe_fd[2])
+static void	wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c)
 {
-	if (cmd->role == TAIL)
-	{
-		pipe_fd[0] = -1;
-		pipe_fd[1] = -1;
-		return (0);
-	}
-	if (pipe(pipe_fd) == -1)
-		return (-1);
-	return (0);
-}
+	size_t	i;
+	int		status;
 
-static void	connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2])
-{
-	if (cmd->role != HEAD)
+	i = 0;
+	while (i < cmd_c)
 	{
-		if (dup2(*read_fd, STDIN_FILENO) == -1)
-			exit(1);
+		if (waitpid(pids[i], &status, 0) != -1) // Implementar retry en EINTR
+		{
+			if (WIFEXITED(status))
+				ctx->last_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				ctx->last_status = 128 + WTERMSIG(status);
+				// Tratar señales
+		}
+		i++;
 	}
-	if (cmd->role != TAIL)
-	{
-		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
-			exit(1);
-	}
-}
-
-static void	close_fds(t_command *cmd, int *read_fd, int pipe_fd[2])
-{
-	if (*read_fd != -1)
-		close(*read_fd);
-	if (cmd->role != TAIL)
-	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-	}
-}
-
-static void	update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2])
-{
-	if (*read_fd != -1)
-		close(*read_fd);
-	if (cmd->role != TAIL)
-	{
-		close(pipe_fd[1]);
-		*read_fd = pipe_fd[0];
-	}
-	else
-		*read_fd = -1;
 }
