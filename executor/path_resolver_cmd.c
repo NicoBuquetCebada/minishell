@@ -6,11 +6,43 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 19:31:20 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/23 19:51:05 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/07 16:42:15 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*get_pathenv(char **envp);
+static char	*get_fullcmdpath(const char *dir, const char *cmd);
+
+char	*resolve_cmd(const char *cmd, char **envp)
+{
+	char	*pathenv;
+	char	*cmdpath;
+	char	*next;
+	char	*pathenv_clean;
+
+	pathenv_clean = get_pathenv(envp);
+	pathenv = pathenv_clean;
+	if (!pathenv || !*pathenv)
+		return (NULL);
+	while (1)
+	{
+		next = ft_strchr(pathenv, ':');
+		if (next)
+			*next = '\0';
+		cmdpath = get_fullcmdpath(pathenv, cmd);
+		if (!cmdpath)
+			break ;
+		if (access(cmdpath, X_OK) == 0)
+			return (free(pathenv_clean), cmdpath);
+		free(cmdpath);
+		if (!next)
+			break ;
+		pathenv = next + 1;
+	}
+	return (free(pathenv_clean), exit(command_not_found_error(cmd)), NULL);
+}
 
 static char	*get_pathenv(char **envp)
 {
@@ -54,33 +86,4 @@ static char	*get_fullcmdpath(const char *dir, const char *cmd)
 	}
 	cmdpath[i] = '\0';
 	return (cmdpath);
-}
-
-char	*resolve_cmd(const char *cmd, char **envp)
-{
-	char	*pathenv;
-	char	*cmdpath;
-	char	*next;
-	char	*pathenv_clean;
-
-	pathenv_clean = get_pathenv(envp);
-	pathenv = pathenv_clean;
-	if (!pathenv || !*pathenv)
-		return (NULL);
-	while (1)
-	{
-		next = ft_strchr(pathenv, ':');
-		if (next)
-			*next = '\0';
-		cmdpath = get_fullcmdpath(pathenv, cmd);
-		if (!cmdpath)
-			break ;
-		if (access(cmdpath, X_OK) == 0)
-			return (free(pathenv_clean), cmdpath);
-		free(cmdpath);
-		if (!next)
-			break ;	
-		pathenv = next + 1;
-	}
-	return (free(pathenv_clean), NULL);
 }

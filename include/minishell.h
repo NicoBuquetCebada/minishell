@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/06 14:47:45 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/07 16:44:38 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 # define MINISHELL_H
 
 # include "libft.h"
-# include <dirent.h>            /* opendir, readdir, closedir */
+# include <dirent.h> /* opendir, readdir, closedir */
+# include <errno.h>
 # include <fcntl.h>             /* open */
 # include <readline/history.h>  /* add_history, rl_clear_history */
 # include <readline/readline.h> /* readline, rl_on_new_line, rl_replace_line */
@@ -121,5 +122,18 @@ int				pipe_init(t_command *cmd, int pipe_fd[2]);
 void			connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
+
+int				ft_echo(char **argv);
+int				ft_pwd(void);
+int				ft_env(char **envp);
+
+int				command_not_found_error(char *cmd);
+int				no_such_file_error(char *path, int redir);
+int				is_a_directory_error(char *dir, int redir);
+int				permission_denied_error(char *file, int redir);
+int				exec_format_error(char *cmd);
+int				redirection_error(char *file, int error);
+int				file_error(char *file, int error);
+void			ft_error(int status);
 
 #endif

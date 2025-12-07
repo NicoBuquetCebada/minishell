@@ -1,22 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path_resolver.c                                    :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/23 16:56:12 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 16:35:52 by nbuquet-         ###   ########.fr       */
+/*   Created: 2025/12/07 14:13:22 by nbuquet-          #+#    #+#             */
+/*   Updated: 2025/12/07 14:20:06 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*resolve_path(const char *cmd, char **envp)
+int	ft_pwd(void)
 {
-	if (!cmd || !envp)
-		return (NULL);
-	if (is_absolute(cmd))
-		return (resolve_absolute(cmd));
-	return (resolve_cmd(cmd, envp));
+	char	*cwd;
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		return (1);
+	ft_putstr_fd(cwd, 1);
+	ft_putchar_fd('\n', 1);
+	free(cwd);
+	return (0);
 }

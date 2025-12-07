@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/06 15:04:03 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/07 15:23:25 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,20 @@
 
 static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
 static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
+static int		execute(t_exec_ctx *ctx, t_exec *exec);
 
-int	execute(t_exec_ctx *ctx, t_exec *exec)
+int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
+{
+	if (execute(ctx, exec) == -1)
+	{
+		perror("minishell");
+		ctx->last_status = 1;
+		return (1);
+	}
+	return (0);
+}
+
+static int	execute(t_exec_ctx *ctx, t_exec *exec)
 {
 	size_t	i;
 	int		read_fd;
