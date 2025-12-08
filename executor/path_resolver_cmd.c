@@ -6,16 +6,16 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 19:31:20 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 16:42:15 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:24:44 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static char	*get_pathenv(char **envp);
-static char	*get_fullcmdpath(const char *dir, const char *cmd);
+static char	*get_fullcmdpath(char *dir, const char *cmd);
 
-char	*resolve_cmd(const char *cmd, char **envp)
+char	*resolve_cmd(char *cmd, char **envp)
 {
 	char	*pathenv;
 	char	*cmdpath;
@@ -60,7 +60,7 @@ static char	*get_pathenv(char **envp)
 	return (NULL);
 }
 
-static char	*get_fullcmdpath(const char *dir, const char *cmd)
+static char	*get_fullcmdpath(char *dir, const char *cmd)
 {
 	size_t	dir_len;
 	size_t	cmd_len;

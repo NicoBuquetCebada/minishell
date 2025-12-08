@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 14:31:40 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:59:23 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@
 # include <unistd.h>            /* fork, pipe, dup, dup2, execve, access, chdir,
 	write, read, close, isatty, ttyname, ttyslot, getcwd */
 
+/*
+** Role in the pipeline:
+**	 HEAD	-> First command of the pipeline
+**   MIDLE	-> All the commands in between TAIL and HEAD
+**   TAIL	-> Last command in the pipeline, or the only one if there is just one
+*/
 typedef enum e_role
 {
 	HEAD,
@@ -105,27 +111,27 @@ typedef struct s_exec_ctx
 	int			interactive;
 }				t_exec_ctx;
 
-char			*resolve_path(const char *cmd, char **envp);
-int				is_absolute(const char *cmd);
-char			*resolve_absolute(const char *cmd);
-char			*resolve_cmd(const char *cmd, char **envp);
+char			*resolve_path(char *cmd, char **envp);
+int				is_absolute(char *cmd);
+char			*resolve_absolute(char *cmd);
+char			*resolve_cmd(char *cmd, char **envp);
 
 int				process_heredocs(t_exec *exec);
 
 int				is_builtin(char *cmd);
 int				is_builtin_statefull(t_exec *exec);
 
-int				execute(t_exec_ctx *ctx, t_exec *exec);
+int				exec_caller(t_exec_ctx *ctx, t_exec *exec);
 int				process_redirs(t_command *cmd);
-void			execute_cmd(t_exec_ctx *ctx, t_command *cmd);
+void			exec_cmd(t_exec_ctx *ctx, t_command *cmd);
 int				pipe_init(t_command *cmd, int pipe_fd[2]);
 void			connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
 
-int				ft_echo(char **argv);
-int				ft_pwd(void);
-int				ft_env(char **envp);
+void			ft_echo(char **argv);
+void			ft_pwd(void);
+void			ft_env(char **envp);
 
 int				command_not_found_error(char *cmd);
 int				no_such_file_error(char *path, int redir);

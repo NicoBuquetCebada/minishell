@@ -6,16 +6,15 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 14:31:40 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:39:23 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static int		execute(t_exec_ctx *ctx, t_exec *exec);
 static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
 static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
-static int		execute(t_exec_ctx *ctx, t_exec *exec);
-static void		handle_signals(t_exec_ctx *ctx, int status);
 
 int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
 {
@@ -68,7 +67,7 @@ static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 		restore_signals();
 		connect_childs(cmd, read_fd, pipe_fd);
 		close_fds(cmd, read_fd, pipe_fd);
-		execute_cmd(ctx, cmd);
+		exec_cmd(ctx, cmd);
 	}
 	update_read_fd(cmd, read_fd, pipe_fd);
 	return (pid);

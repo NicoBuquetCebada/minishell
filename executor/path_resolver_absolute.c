@@ -6,13 +6,13 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 19:31:17 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 13:17:34 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:24:04 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*resolve_absolute(const char *cmd)
+char	*resolve_absolute(char *cmd)
 {
 	struct stat	st;
 
@@ -25,7 +25,7 @@ char	*resolve_absolute(const char *cmd)
 	return (ft_strdup(cmd));
 }
 
-int	is_absolute(const char *cmd)
+int	is_absolute(char *cmd)
 {
 	size_t	i;
 

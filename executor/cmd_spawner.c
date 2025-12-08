@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 14:45:27 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 13:06:41 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 22:01:29 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	pipe_init(t_command *cmd, int pipe_fd[2])
 
 void	connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2])
 {
-	if (cmd->role != HEAD)
+	if (cmd->role != HEAD && *read_fd != -1)
 	{
 		if (dup2(*read_fd, STDIN_FILENO) == -1)
 			ft_error(1);

@@ -6,19 +6,19 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 14:22:39 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 14:36:40 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:43:56 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_env(char	**envp)
+void	ft_env(char	**envp)
 {
 	size_t	i;
 	size_t	j;
 
 	if (!envp || !envp[0])
-		return (1);
+		ft_error(1);
 	i = 0;
 	while (envp[i])
 	{
@@ -32,5 +32,5 @@ int	ft_env(char	**envp)
 		}
 		i++;
 	}
-	return (0);
+	exit(0);
 }

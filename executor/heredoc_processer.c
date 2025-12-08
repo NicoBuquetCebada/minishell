@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 21:45:15 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/11/29 12:05:48 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 20:50:28 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*till_delimiter(t_iospec io);
 static char	*new_tmpfile(char *content);
 static char	*tmpfile_path(void);
 
-int	process_heredocs(t_exec *exec)
+int	process_heredocs(t_exec *exec) // Hay que tener en cuenta la ctrl-D -> Envía un EOF y cierra el heredoc
 {
 	size_t		i;
 	size_t		j;

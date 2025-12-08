@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 13:37:04 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 14:09:25 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:44:13 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 static int	no_newline(char *arg);
 
-int	ft_echo(char **argv)
+void	ft_echo(char **argv)
 {
 	size_t	i;
 	int		no_nl;
 
 	if (!argv[1])
-		return (ft_putchar_fd('\n', 1), 0);
+		return (ft_putchar_fd('\n', 1), exit(0));
 	i = 1;
 	no_nl = 0;
 	if (no_newline(argv[i]))
@@ -39,7 +39,7 @@ int	ft_echo(char **argv)
 	}
 	if (!no_nl)
 		ft_putchar_fd('\n', 1);
-	return (0);
+	exit(0);
 }
 
 static int	no_newline(char *arg)
