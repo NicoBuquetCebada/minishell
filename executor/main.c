@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 22:06:15 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 23:52:55 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 // TODO: Built-ins: cd | export | unset | exit, interactive (ver si me incumbe de algún modo)
 
-// Main Tester
+// Main child built-ins tester
 static void	run_simple_cmd(t_exec_ctx *ctx, char **argv);
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_exec_ctx	ctx;
-	char		*echo_args1[] = {"echo", "hola", "mundo", NULL};
-	char		*echo_args2[] = {"echo", "-n", "sin", "salto", NULL};
+	char		*echo_args1[] = {"echo", "hello", "world", NULL};
+	char		*echo_args2[] = {"echo", "-n", "-nnn", "no newline", NULL};
 	char		*pwd_args[] = {"pwd", NULL};
 	char		*env_args[] = {"env", NULL};
 	
@@ -30,9 +30,9 @@ int	main(int argc, char **argv, char **envp)
 	ctx.envp = envp;
 	ctx.last_status = 0;
 	ctx.interactive = 0;
-	printf("=== echo hola mundo ===\n");
+	printf("=== echo hello world ===\n");
 	run_simple_cmd(&ctx, echo_args1);
-	printf("=== echo -n sin salto ===\n");
+	printf("=== echo -n -nnn no newline ===\n");
 	run_simple_cmd(&ctx, echo_args2);
 	printf("=== pwd ===\n");
 	run_simple_cmd(&ctx, pwd_args);
