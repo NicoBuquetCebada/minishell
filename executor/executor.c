@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 15:23:25 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 14:31:40 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
 static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
 static int		execute(t_exec_ctx *ctx, t_exec *exec);
+static void		handle_signals(t_exec_ctx *ctx, int status);
 
 int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
 {
@@ -40,7 +41,7 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 	i = 0;
 	while (i < exec->cmd_c)
 	{
-		pids[i] = spawn_cmd(ctx, &exec->cmds[i], &read_fd); // Ejecutar builtins. ¿En padre o en hijo?
+		pids[i] = spawn_cmd(ctx, &exec->cmds[i], &read_fd);
 		if (pids[i] == -1)
 			return (wait_pids(ctx, pids, i), free(pids), -1);
 		i++;
@@ -64,10 +65,10 @@ static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 		return (-1);
 	if (pid == 0)
 	{
+		restore_signals();
 		connect_childs(cmd, read_fd, pipe_fd);
 		close_fds(cmd, read_fd, pipe_fd);
 		execute_cmd(ctx, cmd);
-		exit(0);
 	}
 	update_read_fd(cmd, read_fd, pipe_fd);
 	return (pid);
@@ -77,17 +78,24 @@ static void	wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c)
 {
 	size_t	i;
 	int		status;
+	int		ret;
 
 	i = 0;
 	while (i < cmd_c)
 	{
-		if (waitpid(pids[i], &status, 0) != -1) // Implementar retry en EINTR
+		while (1)
+		{
+			ret = waitpid(pids[i], &status, 0);
+			if (ret == -1 && errno == EINTR)
+				continue ;
+			break ;
+		}
+		if (ret != -1)
 		{
 			if (WIFEXITED(status))
 				ctx->last_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				ctx->last_status = 128 + WTERMSIG(status);
-				// Tratar señales
+				handle_signals(ctx, status);
 		}
 		i++;
 	}

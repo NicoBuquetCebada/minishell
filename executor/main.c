@@ -6,13 +6,13 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/06 15:07:29 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 15:16:05 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// TODO: Manejo de errores y respuestas en señales, builtins, ¿interactive?
+// TODO: Ctrl-D -> EOF, Built-ins: cd | export | unset | exit, interactive (ver si me incumbe de algún modo)
 
 // Main Tester
 static void	test_pipeline_redirs(t_exec_ctx *ctx)

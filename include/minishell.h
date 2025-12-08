@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 16:44:38 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 14:31:40 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,11 @@ int				no_such_file_error(char *path, int redir);
 int				is_a_directory_error(char *dir, int redir);
 int				permission_denied_error(char *file, int redir);
 int				exec_format_error(char *cmd);
-int				redirection_error(char *file, int error);
-int				file_error(char *file, int error);
+void			redir_error(char *file, int error);
+void			bin_error(char *file, int error);
 void			ft_error(int status);
+
+void			handle_signals(t_exec_ctx *ctx, int status);
+void			restore_signals(void);
 
 #endif

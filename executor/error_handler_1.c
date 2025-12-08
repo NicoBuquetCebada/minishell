@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:35:50 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 16:44:28 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 13:18:18 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,17 @@ int	exec_format_error(char *cmd)
 	return (126);
 }
 
-int	redirection_error(char *file, int error)
+void	redir_error(char *file, int error)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(file, 2);
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(strerror(error), 2);
 	ft_putchar_fd('\n', 2);
-	return (1);
+	exit(1);
 }
 
-int	file_error(char *file, int error)
+void	bin_error(char *file, int error)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(file, 2);
@@ -76,10 +76,10 @@ int	file_error(char *file, int error)
 	ft_putstr_fd(strerror(error), 2);
 	ft_putchar_fd('\n', 2);
 	if (error == ENOENT)
-		return (127);
-	if (error == EISDIR || error == EACCES)
-		return (126);
-	return (1);
+		exit(127);
+	if (error == EISDIR || error == EACCES || error == ENOEXEC)
+		exit(126);
+	exit(1);
 }
 
 void	ft_error(int status)

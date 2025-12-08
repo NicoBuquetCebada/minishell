@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 11:25:45 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/07 16:04:06 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/08 13:18:18 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	redir_stdin(t_iospec io)
 
 	fd = open(io.arg, O_RDONLY);
 	if (fd < 0)
-		exit(redirection_error(io.arg, errno));
+		redir_error(io.arg, errno);
 	if (dup2(fd, STDIN_FILENO) == -1)
 		return (close(fd), -1);
 	return (close(fd));
@@ -60,7 +60,7 @@ static int	redir_stdout(t_iospec io)
 	else
 		fd = -1;
 	if (fd < 0)
-		exit(redirection_error(io.arg, errno));
+		redir_error(io.arg, errno);
 	if (dup2(fd, STDOUT_FILENO) == -1)
 		return (close(fd), -1);
 	return (close(fd));
