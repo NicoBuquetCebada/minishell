@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 21:45:15 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 20:50:28 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:49:21 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static int	convert_to_filein(t_iospec *io)
 	return (0);
 }
 
-static char	*till_delimiter(t_iospec io)
+static char	*till_delimiter(t_iospec io) // no expande varibles, meter \n entre entradas, hasta EOF.
 {
 	int		del_len;
 	char	*line;
