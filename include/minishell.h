@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:59:49 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/15 17:16:27 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ char			*resolve_cmd(char *cmd, char **envp);
 int				process_heredocs(t_exec *exec);
 
 int				is_builtin(char *cmd);
-int				is_builtin_statefull(t_exec *exec);
+int				is_builtin_stateful(t_exec *exec);
 
 int				exec_caller(t_exec_ctx *ctx, t_exec *exec);
 int				process_redirs(t_command *cmd);

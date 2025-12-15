@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 18:33:04 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 20:54:25 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/15 17:16:16 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	is_builtin_statefull(t_exec *exec)
+int	is_builtin_stateful(t_exec *exec)
 {
 	char	*cmd;
 	size_t	len;

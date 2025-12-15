@@ -6,14 +6,14 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 21:39:23 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2025/12/15 17:30:57 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int		execute(t_exec_ctx *ctx, t_exec *exec);
-static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
+static pid_t	spawn_pipe(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
 static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
 
 int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
@@ -40,7 +40,13 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 	i = 0;
 	while (i < exec->cmd_c)
 	{
-		pids[i] = spawn_cmd(ctx, &exec->cmds[i], &read_fd);
+		if (is_builtin_stateful(exec))
+		{
+			spawn_builtin();
+			i++;
+			continue ;
+		}
+		pids[i] = spawn_pipe(ctx, &exec->cmds[i], &read_fd);
 		if (pids[i] == -1)
 			return (wait_pids(ctx, pids, i), free(pids), -1);
 		i++;
@@ -50,7 +56,15 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 	return (0);
 }
 
-static pid_t	spawn_cmd(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
+/* static int	spawn_child(t_exec_ctx *ctx, t_exec *exec, pid_t **pids)
+{
+	pids[i] = spawn_pipe(ctx, &exec->cmds[i], &read_fd);
+	if (pids[i] == -1)
+		return (wait_pids(ctx, pids, i), free(pids), -1);
+	i++;
+} */
+
+static pid_t	spawn_pipe(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
