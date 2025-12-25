@@ -1,37 +1,41 @@
 #include "../include/minishell.h"
 
-char *get_env_value(const char *key, t_exec_ctx *ctx)
+/*
+** Devuelve una cadena NUEVA con el valor de la variable.
+** Si no existe, devuelve NULL (se tratará como "").
+*/
+char    *get_env_value(const char *key, t_exec_ctx *ctx)
 {
+    int     i;
+    char    *env;
+    char    *sep;
+    size_t  key_len;
+
     if (ft_strncmp(key, "?", 2) == 0)
-        return ft_itoa(ctx->last_status); // Expandir $?
-        //Tengo que ver cuando actualizo ese valor!!
-    int i = 0;
+        return (ft_itoa(ctx->last_status));
+    key_len = ft_strlen(key);
+    i = 0;
     while (ctx->envp[i])
     {
-        char *env = ctx->envp[i];
-        char *sep = strchr(env, '='); //funcion lib
-        if (sep && ft_strncmp(env, key, sep - env) == 0) //función lib
-            return ft_strdup(sep + 1); // funcion lib
+        env = ctx->envp[i];
+        sep = ft_strchr(env, '=');
+        if (sep && (size_t)(sep - env) == key_len
+            && ft_strncmp(env, key, key_len) == 0)
+            return (ft_strdup(sep + 1));
         i++;
     }
-    return NULL;
+    return (NULL);
 }
 
-int get_var_name(const char *w, int i, char **key)
+/*
+** Concatena text al final de *result, liberando el antiguo *result.
+*/
+void    append_text(char **result, const char *text)
 {
-    int start = i;
+    char    *temp;
 
-    while (w[i] && (ft_isalnum(w[i]) || w[i] == '_'))
-        i++;
-
-    *key = ft_substr(w, start, i - start);
-    return i;
-}
-
-void append_text(char **result, const char *text)
-{
-    char *temp;
-
+    if (!text)
+        return ;
     if (*result)
     {
         temp = ft_strjoin(*result, text);
@@ -42,82 +46,125 @@ void append_text(char **result, const char *text)
         *result = ft_strdup(text);
 }
 
-int expand_var(const char *w, int i, t_exec_ctx *ctx, char **res)
+static int  is_var_start(char c)
 {
-    char *key;
-    char *value;
-    char *literal;
-
-    i++;
-    i = get_var_name(w, i, &key);
-    value = get_env_value(key, ctx);
-    free(key);
-    if (value)
-    {
-        append_text(res, value);
-        free(value);
-    }
-    else
-    {
-        literal = ft_substr(w, i - strlen(key) - 1, strlen(key) + 1);
-        append_text(res, literal);
-        free(literal);
-    }
-    return i;
+    return (ft_isalpha((unsigned char)c) || c == '_');
 }
 
-
-int expand_literal(const char *w, int i, char **res)
+/*
+** Maneja un '$' en w[i]. Devuelve el nuevo índice i tras la expansión.
+*/
+static int  expand_var(const char *w, int i, t_exec_ctx *ctx, char **res)
 {
-    int start;
-    char *literal;
-    char *temp;
+    char    *key;
+    char    *val;
+    int     start;
+
+    i++;                        // saltar '$'
+    if (!w[i])
+    {
+        append_text(res, "$");
+        return (i);
+    }
+    if (w[i] == '?')
+    {
+        val = get_env_value("?", ctx);
+        if (val)
+        {
+            append_text(res, val);
+            free(val);
+        }
+        return (i + 1);
+    }
+    if (!is_var_start(w[i]))
+    {
+        append_text(res, "$");
+        return (i);
+    }
+    start = i;
+    while (w[i] && (ft_isalnum((unsigned char)w[i]) || w[i] == '_'))
+        i++;
+    key = ft_substr(w, start, i - start);
+    if (!key)
+        return (i);
+    val = get_env_value(key, ctx);
+    free(key);
+    if (val)
+    {
+        append_text(res, val);
+        free(val);
+    }
+    return (i);
+}
+
+/*
+** Copia literal desde w[i] hasta el próximo '$' o fin.
+*/
+static int  expand_literal(const char *w, int i, char **res)
+{
+    int     start;
+    char    *lit;
 
     start = i;
     while (w[i] && w[i] != '$')
         i++;
-    literal = ft_substr(w, start, i - start);
-    append_text(res, literal);
-    free(literal);
-    return i;
-}
-
-char *expand_word(const char *word, t_exec_ctx *ctx)
-{
-    char *result;
-    int i;
-
-    i = 0;
-    result = NULL;
-    while (word[i])
+    lit = ft_substr(w, start, i - start);
+    if (lit)
     {
-        if (word[i] == '$')
-            i = expand_var(word, i, ctx, &result);
-        else
-            i = expand_literal(word, i, &result);
+        append_text(res, lit);
+        free(lit);
     }
-    return result;
+    return (i);
 }
 
-void expand(t_token *tokens, t_exec_ctx *ctx)
+/*
+** Expande una palabra (sin comillas) usando ctx.
+*/
+char    *expand_word(const char *w, t_exec_ctx *ctx)
 {
-    t_token *current;
-    t_tokenpart *part;
+    char    *res;
+    int     i;
 
-    current = tokens;
-    while (current)
+    res = NULL;
+    i = 0;
+    while (w[i])
     {
-        part = current->parts;
+        if (w[i] == '$')
+            i = expand_var(w, i, ctx, &res);
+        else
+            i = expand_literal(w, i, &res);
+    }
+    if (!res)
+        res = ft_strdup("");
+    return (res);
+}
+
+/*
+** Recorre todos los tokens y expande solo WORD que no vienen de comillas simples.
+*/
+void    expand(t_token *tokens, t_exec_ctx *ctx)
+{
+    t_token     *cur;
+    t_tokenpart *part;
+    char        *expanded;
+
+    cur = tokens;
+    while (cur)
+    {
+        part = cur->parts;
         while (part)
         {
             if (part->type == WORD && part->origin != IN_SQUOTE)
             {
-                char *expanded = expand_word(part->value, ctx);
-                free(part->value);
-                part->value = expanded;
+                expanded = expand_word(part->value, ctx);
+                if (expanded)
+                {
+                    free(part->value);
+                    part->value = expanded;
+                }
             }
             part = part->next;
         }
-        current = current->next;
+        cur = cur->next;
     }
 }

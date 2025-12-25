@@ -79,16 +79,18 @@ void handle_input(char *line, t_exec_ctx ctx)
         free_lexed_line(lexed_line);
         return;
     }
+    print_tokenized_line(tokenized_line);
+
     if (validate_tokens(tokenized_line) == 0)
     {
         free_lexed_line(lexed_line);
         free_tokenized_line(tokenized_line);
         return;
     }
-
-    /*expand(tokenized_line, &ctx);
+    expand(tokenized_line, &ctx);
+    print_tokenized_line(tokenized_line);
     // Llamar a fill_exec y luego imprimir la estructura t_exec
-    exec = fill_exec(tokenized_line);
+    /*exec = fill_exec(tokenized_line);
     if (exec)
     {
         print_exec(exec);
@@ -96,7 +98,6 @@ void handle_input(char *line, t_exec_ctx ctx)
         free(exec->cmds);
         free(exec);
     }*/
-
     free_lexed_line(lexed_line);
     free_tokenized_line(tokenized_line);
 }

@@ -48,3 +48,24 @@ void print_lexed_line(t_lexer *lexed_line)
         current_lexer = current_lexer->next;
     }
 }
+
+void print_tokenized_line(t_token *tokenized_line)
+{
+    t_token *current_token = tokenized_line;
+    size_t part_index;
+
+    printf("Tokenized Line:\n");
+    while (current_token)
+    {
+        t_tokenpart *current_part = current_token->parts;
+        printf("  Token Node:\n");
+        part_index = 0;
+        while (current_part)
+        {
+            printf("    Part %zu: Type: %d, Value: [%s]\n", part_index, current_part->type, current_part->value);
+            current_part = current_part->next;
+            part_index++;
+        }
+        current_token = current_token->next;
+    }
+}
