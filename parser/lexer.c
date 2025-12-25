@@ -103,7 +103,7 @@ static int skip_spaces(char *line, int i, t_lexer **nodes, t_lexer **aux)
 
 t_lexer *lexer(char *line)
 {
-    t_lexer *nodes;
+    t_lexer *nodes = NULL;
     t_lexer *aux;
     int i;
 

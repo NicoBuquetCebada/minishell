@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+/*char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char			*res;
 	unsigned int	i;
@@ -33,14 +33,16 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	res[i] = '\0';
 	return (res);
-}
+}*/
 
-/*char	*ft_substr(const char *src, int start, int len) 
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {		
-	char *out = malloc(len + 1);
+	char *out;
+	
+	out = malloc(len + 1);
 	if (!out)
 		return NULL;
-	memcpy(out, src + start, len);
+	ft_memcpy(out, s + start, len);
 	out[len] = '\0';
 	return out;
-}*/
+}

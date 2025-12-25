@@ -6,9 +6,12 @@ t_lexpart *new_part(t_lexer_type type, char *value)
 	
 	part = malloc(sizeof(t_lexpart));
     if (!part)
-        return NULL;
+	{
+		free(value);
+		return NULL;
+	}
     part->type = type;
-    part->value = strdup(value);
+    part->value = value;
     if (!part->value)
     {
         free(part);

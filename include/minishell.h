@@ -196,6 +196,8 @@ t_tokentype set_type(t_lexpart *part);
 void expand(t_token *tokens, t_exec_ctx *ctx);
 int validate_tokens(t_token *tokens);
 t_exec *fill_exec(t_token *tokens);
+void print_lexed_line(t_lexer *lexed_line);
+void print_exec(t_exec *exec);
 
 
 #endif
