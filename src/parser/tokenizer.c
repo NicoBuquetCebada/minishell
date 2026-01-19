@@ -1,4 +1,5 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "parser.h"
 
 t_tokentype set_type(t_lexpart *part)
 {

@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 13:37:04 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 21:44:13 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:40:58 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 static int	no_newline(char *arg);
 

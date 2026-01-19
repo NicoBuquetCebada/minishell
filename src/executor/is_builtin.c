@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 18:33:04 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 20:54:25 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:41:33 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 int	is_builtin(char *cmd)
 {
@@ -23,7 +24,7 @@ int	is_builtin(char *cmd)
 	return (0);
 }
 
-int	is_builtin_statefull(t_exec *exec)
+int	is_builtin_stateful(t_exec *exec)
 {
 	char	*cmd;
 	size_t	len;

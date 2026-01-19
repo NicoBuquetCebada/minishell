@@ -1,4 +1,5 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "parser.h"
 
 t_token *new_token(void)
 {

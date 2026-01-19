@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 19:31:17 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 21:24:04 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:41:43 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 char	*resolve_absolute(char *cmd)
 {

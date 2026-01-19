@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:35:50 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 21:25:28 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:40:43 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 int	command_not_found_error(char *cmd)
 {

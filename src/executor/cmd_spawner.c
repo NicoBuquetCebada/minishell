@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 14:45:27 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 22:01:29 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:40:46 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 int	pipe_init(t_command *cmd, int pipe_fd[2])
 {
