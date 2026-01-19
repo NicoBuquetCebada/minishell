@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 21:45:15 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:49:21 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:41:09 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 static int	g_heredoc_id = 0;
 static int	convert_to_filein(t_iospec *io);

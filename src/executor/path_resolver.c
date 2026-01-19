@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal_handler.c                                   :+:      :+:    :+:   */
+/*   path_resolver.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/08 14:27:58 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:59:09 by nbuquet-         ###   ########.fr       */
+/*   Created: 2025/11/23 16:56:12 by nbuquet-          #+#    #+#             */
+/*   Updated: 2026/01/19 19:41:50 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
-void	handle_signals(t_exec_ctx *ctx, int status)
+char	*resolve_path(char *cmd, char **envp)
 {
-	int	sigv;
-
-	sigv = WTERMSIG(status);
-	ctx->last_status = 128 + sigv;
-	if (sigv == 2)
-		ft_putchar_fd('\n', 1);
-	if (sigv == 3)
-		ft_putstr_fd("Quit (core dumped)\n", 1);
-}
-
-void	restore_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	if (!cmd || !envp)
+		return (NULL);
+	if (is_absolute(cmd))
+		return (resolve_absolute(cmd));
+	return (resolve_cmd(cmd, envp));
 }

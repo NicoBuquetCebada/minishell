@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 20:08:59 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/08 21:42:27 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:39:28 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 static void	exec_builtin(char **argv, char **envp);
 

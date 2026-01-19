@@ -6,16 +6,17 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:59:26 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:56:40 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 // TODO: Built-ins: cd | export | unset | exit, interactive (ver si me incumbe de algún modo)
 
 // Main child built-ins tester
-static void	run_simple_cmd(t_exec_ctx *ctx, char **argv);
+/* static void	run_simple_cmd(t_exec_ctx *ctx, char **argv);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -54,4 +55,4 @@ static void	run_simple_cmd(t_exec_ctx *ctx, char **argv)
 	exec.cmds = &cmd;
 	exec.cmd_c = 1;
 	exec_caller(ctx, &exec);
-}
+} */

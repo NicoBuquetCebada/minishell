@@ -6,11 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 18:33:04 by nbuquet-          #+#    #+#             */
-/*   Updated: 2025/12/15 17:16:16 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/19 19:41:33 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor.h"
 
 int	is_builtin(char *cmd)
 {
