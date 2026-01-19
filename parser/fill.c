@@ -1,266 +1,192 @@
-#include "../include/minishell.h"
+#include "minishell.h"
 
-static t_exec_info *init_exec_info(void)
+typedef struct s_it
 {
-    t_exec_info *info;
+	t_token		*t;
+	t_tokenpart	*p;
+}	t_it;
 
-    info = malloc(sizeof(t_exec_info));
-    if (!info)
-        return NULL;
-    info->cmd_count = 0;
-    info->cmds = NULL;
-    return info;
+static int	is_redir(t_tokentype t)
+{
+	return (t == REDIR_IN || t == REDIR_OUT || t == APPEND || t == HEREDOC);
 }
 
-static void count_commands(t_exec_info *info, t_token *tokens)
+static t_iotype	map_iotype(t_tokentype t)
 {
-    t_token *current = tokens;
-    size_t count = 1;
-    while (current)
-    {
-        if (current->parts && current->parts->type == PIPE)
-            count++;
-        current = current->next;
-    }
-    info->cmd_count = count;
+	if (t == REDIR_IN) return (IO_FILE_IN);
+	if (t == REDIR_OUT) return (IO_FILE_TRUNC);
+	if (t == APPEND) return (IO_FILE_APPEND);
+	return (IO_FILE_HEREDOC);
 }
 
-static int allocate_cmd_info(t_exec_info *info)
+static void	it_init(t_it *it, t_token *t)
 {
-    info->cmds = malloc(sizeof(t_cmd_info) * info->cmd_count);
-    if (!info->cmds)
-        return 0;
-    return 1;
+	it->t = t;
+	it->p = NULL;
+	while (it->t && !it->t->parts)
+		it->t = it->t->next;
+	if (it->t)
+		it->p = it->t->parts;
 }
 
-/*static int allocate_cmd_info(t_exec_info *info)
+static void	it_next(t_it *it)
 {
-    info->cmds = malloc(sizeof(t_cmd_info) * info->cmd_count);
-    if (!info->cmds)
-        return 0;
-    size_t i = 0;
-    while (i < info->cmd_count)
-    {
-        info->cmds[i].argc = 0;
-        info->cmds[i].redir_count = 0;
-        i++;
-    }
-    return 1;
-}*/
-
-/*static void fill_cmd_info(t_exec_info *info, t_token *tokens)
-{
-    t_token *current;
-    t_tokenpart *part;
-    size_t cmd_index;
-
-    cmd_index = 0;
-    current = tokens;
-    while (cmd_index < info->cmd_count)
-    {
-        info->cmds[cmd_index].argc = 0;
-        info->cmds[cmd_index].redir_count = 0;
-        part = current->parts;
-        while (part)
-        {
-            if (part->type == WORD)
-                info->cmds[cmd_index].argc++;
-            else if (part->type == REDIR_IN || part->type == REDIR_OUT ||
-                     part->type == APPEND || part->type == HEREDOC)
-                info->cmds[cmd_index].redir_count++;
-            part = part->next;
-        }
-        if (current->parts && current->parts->type == PIPE)
-            cmd_index++;
-        current = current->next;
-    }
-}*/
-
-static void fill_cmd_info(t_exec_info *info, t_token *tokens)
-{
-    t_token *current = tokens;
-    size_t cmd_index = 0;
-
-    while (current)
-    {
-        if (!current->parts)
-        {
-            current = current->next;
-            continue;
-        }
-
-        t_tokenpart *part = current->parts;
-        while (part)
-        {
-            if (part->type == WORD)
-                info->cmds[cmd_index].argc++;
-            else if (part->type == REDIR_IN || part->type == REDIR_OUT ||
-                     part->type == APPEND || part->type == HEREDOC)
-                info->cmds[cmd_index].redir_count++;
-            part = part->next;
-        }
-
-        if (current->parts->type == PIPE)
-            cmd_index++;
-        current = current->next;
-    }
+	if (!it->t || !it->p)
+		return ;
+	if (it->p->next)
+		return ((void)(it->p = it->p->next));
+	it->t = it->t->next;
+	while (it->t && !it->t->parts)
+		it->t = it->t->next;
+	it->p = (it->t ? it->t->parts : NULL);
 }
 
-static t_exec_info *preprocess_tokens(t_token *tokens)
+static size_t	count_cmds(t_token *tokens)
 {
-    t_exec_info *info;
+	t_it	it;
+	size_t	c;
 
-    info = init_exec_info();
-    if (!info)
-        return NULL;
-    count_commands(info, tokens);
-    if (!allocate_cmd_info(info))
-    {
-        free(info);
-        return NULL;
-    }
-    fill_cmd_info(info, tokens);
-    return info;
+	c = 1;
+	it_init(&it, tokens);
+	while (it.p)
+	{
+		if (it.p->type == PIPE)
+			c++;
+		it_next(&it);
+	}
+	return (c);
 }
 
-static void free_exec_info(t_exec_info *info)
+static void	set_role(t_command *c, size_t i, size_t total)
 {
-    if (!info)
-        return;
-    free(info->cmds);
-    free(info);
+	if (total == 1) c->role = HEAD;
+	else if (i == 0) c->role = HEAD;
+	else if (i + 1 == total) c->role = TAIL;
+	else c->role = MIDDLE;
 }
 
-static t_exec *allocate_exec(t_exec_info *info)
+static void	init_cmd(t_command *c)
 {
-    t_exec *exec;
-    size_t i;
-
-    exec = malloc(sizeof(t_exec));
-    if (!exec)
-        return NULL;
-
-    exec->cmds = malloc(sizeof(t_command) * info->cmd_count);
-    if (!exec->cmds)
-    {
-        free(exec);
-        return NULL;
-    }
-
-    exec->cmd_c = info->cmd_count;
-    i = 0;
-    while (i < info->cmd_count)
-    {
-        exec->cmds[i].argv = malloc(sizeof(char *) * (info->cmds[i].argc + 1));
-        exec->cmds[i].ios = malloc(sizeof(t_iospec) * info->cmds[i].redir_count);
-        exec->cmds[i].io_c = 0;
-        exec->cmds[i].role = HEAD;
-        exec->cmds[i].resolved_path = NULL;
-        i++;
-    }
-
-    return exec;
+	c->argv = NULL;
+	c->ios = NULL;
+	c->io_c = 0;
+	c->resolved_path = NULL;
+	c->role = HEAD;
 }
 
-
-static void process_command_parts(t_command *cmd, t_tokenpart *part, size_t *arg_index, size_t *redir_index)
+static void	count_seg(t_it it, size_t *wc, size_t *rc)
 {
-    while (part)
-    {
-        if (part->type == WORD)
-        {
-            cmd->argv[*arg_index] = strdup(part->value);
-            (*arg_index)++;
-        }
-        else if (part->type == REDIR_IN || part->type == REDIR_OUT ||
-                 part->type == APPEND || part->type == HEREDOC)
-        {
-            cmd->ios[*redir_index].type = IO_FILE_IN;
-            if (part->type == REDIR_OUT)
-                cmd->ios[*redir_index].type = IO_FILE_TRUNC;
-            else if (part->type == APPEND)
-                cmd->ios[*redir_index].type = IO_FILE_APPEND;
-            else if (part->type == HEREDOC)
-                cmd->ios[*redir_index].type = IO_FILE_HEREDOC;
-
-            cmd->ios[*redir_index].arg = strdup(part->next->value);
-            cmd->ios[*redir_index].expand = 1;
-            if (part->type == HEREDOC)
-                cmd->ios[*redir_index].expand = 0;
-
-            (*redir_index)++;
-            part = part->next;
-        }
-        part = part->next;
-    }
+	*wc = 0;
+	*rc = 0;
+	while (it.p && it.p->type != PIPE)
+	{
+		if (is_redir(it.p->type))
+		{
+			(*rc)++;
+			it_next(&it);
+			if (it.p) it_next(&it);
+			continue ;
+		}
+		if (it.p->type == WORD)
+			(*wc)++;
+		it_next(&it);
+	}
 }
 
-
-static void process_tokens_into_exec(t_exec *exec, t_exec_info *info, t_token *tokens)
+static int	alloc_cmd(t_command *c, size_t wc, size_t rc)
 {
-    t_token *current;
-    size_t cmd_index;
-    size_t arg_index;
-    size_t redir_index;
-
-    cmd_index = 0;
-    arg_index = 0;
-    redir_index = 0;
-    current = tokens;
-
-    while (current)
-    {
-        process_command_parts(&exec->cmds[cmd_index], current->parts, &arg_index, &redir_index);
-        exec->cmds[cmd_index].argv[arg_index] = NULL;
-
-        if (current->parts && current->parts->type == PIPE)
-        {
-            cmd_index++;
-            arg_index = 0;
-            redir_index = 0;
-        }
-        current = current->next;
-    }
+	c->argv = (char **)malloc(sizeof(char *) * (wc + 1));
+	if (!c->argv)
+		return (0);
+	c->argv[0] = NULL;
+	c->ios = NULL;
+	c->io_c = rc;
+	if (rc)
+	{
+		c->ios = (t_iospec *)malloc(sizeof(t_iospec) * rc);
+		if (!c->ios)
+			return (0);
+	}
+	return (1);
 }
 
-static void assign_roles(t_exec *exec)
+static int	fill_seg(t_it *it, t_command *c, size_t wc)
 {
-    size_t i;
+	size_t	ai;
+	size_t	ri;
 
-    i = 0;
-    while (i < exec->cmd_c)
-    {
-        if (i == 0)
-            exec->cmds[i].role = HEAD;
-        else if (i == exec->cmd_c - 1)
-            exec->cmds[i].role = TAIL;
-        else
-            exec->cmds[i].role = MIDDLE;
-        i++;
-    }
+	ai = 0;
+	ri = 0;
+	while (it->p && it->p->type != PIPE)
+	{
+		if (is_redir(it->p->type))
+		{
+			c->ios[ri].type = map_iotype(it->p->type);
+			it_next(it);
+			c->ios[ri].arg = ft_strdup(it->p->value);
+			c->ios[ri].expand = (c->ios[ri].type != IO_FILE_HEREDOC);
+			ri++; it_next(it); continue ;
+		}
+		if (it->p->type == WORD && ai < wc)
+			c->argv[ai++] = ft_strdup(it->p->value);
+		it_next(it);
+	}
+	c->argv[ai] = NULL;
+	return (1);
 }
 
-t_exec *fill_exec(t_token *tokens)
+static void	free_cmd_arrays(t_command *c)
 {
-    t_exec_info *info;
-    t_exec *exec;
+	size_t	i;
 
-    info = preprocess_tokens(tokens);
-    if (!info)
-        return NULL;
-
-    exec = allocate_exec(info);
-    if (!exec)
-    {
-        free_exec_info(info);
-        return NULL;
-    }
-
-    process_tokens_into_exec(exec, info, tokens);
-    assign_roles(exec);
-    free_exec_info(info);
-
-    return exec;
+	i = 0;
+	while (c->argv && c->argv[i])
+		free(c->argv[i++]);
+	free(c->argv);
+	i = 0;
+	while (c->ios && i < c->io_c)
+		free(c->ios[i++].arg);
+	free(c->ios);
+	free(c->resolved_path);
 }
 
+static void	free_exec_partial(t_exec *e, size_t n)
+{
+	size_t	i;
 
+	i = 0;
+	while (i < n)
+		free_cmd_arrays(&e->cmds[i++]);
+	free(e->cmds);
+	free(e);
+}
+
+t_exec	*fill_exec(t_token *tokens)
+{
+	t_exec	*e;
+	t_it	it;
+	size_t	i, wc, rc;
+
+	e = (t_exec *)malloc(sizeof(t_exec));
+	if (!e)
+        return (NULL);
+	e->cmd_c = count_cmds(tokens);
+	e->cmds = (t_command *)malloc(sizeof(t_command) * e->cmd_c);
+	if (!e->cmds) return (free(e), NULL);
+	i = 0;
+	it_init(&it, tokens);
+	while (i < e->cmd_c)
+	{
+		init_cmd(&e->cmds[i]);
+		set_role(&e->cmds[i], i, e->cmd_c);
+		count_seg(it, &wc, &rc);
+		if (!alloc_cmd(&e->cmds[i], wc, rc))
+			return (free_exec_partial(e, i), NULL);
+		if (!fill_seg(&it, &e->cmds[i], wc))
+			return (free_exec_partial(e, i + 1), NULL);
+		if (it.p && it.p->type == PIPE)
+			it_next(&it);
+		i++;
+	}
+	return (e);
+}

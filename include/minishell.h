@@ -199,5 +199,7 @@ t_exec *fill_exec(t_token *tokens);
 void print_lexed_line(t_lexer *lexed_line);
 void print_exec(t_exec *exec);
 void print_tokenized_line(t_token *tokenized_line);
+void	merge_words(t_token *toks);
+
 
 #endif

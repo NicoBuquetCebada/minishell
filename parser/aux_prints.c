@@ -1,31 +1,66 @@
 #include "../include/minishell.h"
 
 // Función auxiliar para imprimir la estructura t_exec
-void print_exec(t_exec *exec)
-{
-    size_t i, j;
+#include "minishell.h"
+#include <stdio.h>
 
-    printf("Pipeline:\n");
-    printf("Number of commands: %zu\n", exec->cmd_c);
-    for (i = 0; i < exec->cmd_c; i++)
-    {
-        t_command *cmd = &exec->cmds[i];
-        printf("  Command %zu:\n", i);
-        printf("    Role: %d\n", cmd->role);
-        printf("    Arguments (argv):\n");
-        j = 0;
-        while (cmd->argv && cmd->argv[j])
-        {
-            printf("      [%s]\n", cmd->argv[j]);
-            j++;
-        }
-        printf("    Redirections (ios):\n");
-        for (j = 0; j < cmd->io_c; j++)
-        {
-            t_iospec *io = &cmd->ios[j];
-            printf("      Type: %d, Arg: %s, Expand: %d\n", io->type, io->arg, io->expand);
-        }
-    }
+static const char	*role_str(t_role r)
+{
+	if (r == HEAD) return ("HEAD");
+	if (r == MIDDLE) return ("MIDDLE");
+	return ("TAIL");
+}
+
+static const char	*io_str(t_iotype t)
+{
+	if (t == IO_FILE_IN) return ("<");
+	if (t == IO_FILE_TRUNC) return (">");
+	if (t == IO_FILE_APPEND) return (">>");
+	return ("<<");
+}
+
+static void	print_argv(char **argv)
+{
+	size_t	i;
+
+	i = 0;
+	while (argv && argv[i])
+	{
+		printf("      argv[%zu] = '%s'\n", i, argv[i]);
+		i++;
+	}
+}
+
+static void	print_ios(t_iospec *ios, size_t io_c)
+{
+	size_t	i;
+
+	i = 0;
+	while (ios && i < io_c)
+	{
+		printf("      io[%zu] = %s arg='%s' expand=%d\n",
+			i, io_str(ios[i].type), ios[i].arg, ios[i].expand);
+		i++;
+	}
+}
+
+void	print_exec(t_exec *exec)
+{
+	size_t	i;
+
+	if (!exec)
+		return ;
+	printf("EXEC: cmd_c=%zu\n", exec->cmd_c);
+	i = 0;
+	while (i < exec->cmd_c)
+	{
+		printf("  CMD %zu (%s)\n", i, role_str(exec->cmds[i].role));
+		printf("    argv:\n");
+		print_argv(exec->cmds[i].argv);
+		printf("    ios: io_c=%zu\n", exec->cmds[i].io_c);
+		print_ios(exec->cmds[i].ios, exec->cmds[i].io_c);
+		i++;
+	}
 }
 
 void print_lexed_line(t_lexer *lexed_line)

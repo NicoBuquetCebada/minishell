@@ -1,8 +1,8 @@
 #include "../include/minishell.h"
 
 /*
-** Devuelve una cadena NUEVA con el valor de la variable.
-** Si no existe, devuelve NULL (se tratará como "").
+Devuelve una cadena NUEVA con el valor de la variable.
+Si no existe, devuelve NULL (se tratará como "").
 */
 char    *get_env_value(const char *key, t_exec_ctx *ctx)
 {
@@ -28,7 +28,7 @@ char    *get_env_value(const char *key, t_exec_ctx *ctx)
 }
 
 /*
-** Concatena text al final de *result, liberando el antiguo *result.
+Concatena text al final de *result, liberando el antiguo *result.
 */
 void    append_text(char **result, const char *text)
 {
@@ -52,7 +52,7 @@ static int  is_var_start(char c)
 }
 
 /*
-** Maneja un '$' en w[i]. Devuelve el nuevo índice i tras la expansión.
+Maneja un '$' en w[i]. Devuelve el nuevo índice i tras la expansión.
 */
 static int  expand_var(const char *w, int i, t_exec_ctx *ctx, char **res)
 {
@@ -98,7 +98,7 @@ static int  expand_var(const char *w, int i, t_exec_ctx *ctx, char **res)
 }
 
 /*
-** Copia literal desde w[i] hasta el próximo '$' o fin.
+Copia literal desde w[i] hasta el próximo '$' o fin.
 */
 static int  expand_literal(const char *w, int i, char **res)
 {
@@ -140,7 +140,7 @@ char    *expand_word(const char *w, t_exec_ctx *ctx)
 }
 
 /*
-** Recorre todos los tokens y expande solo WORD que no vienen de comillas simples.
+Recorre todos los tokens y expande solo WORD que no vienen de comillas simples.
 */
 void    expand(t_token *tokens, t_exec_ctx *ctx)
 {
@@ -167,4 +167,5 @@ void    expand(t_token *tokens, t_exec_ctx *ctx)
         }
         cur = cur->next;
     }
+    merge_words(tokens); 
 }

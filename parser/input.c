@@ -21,29 +21,6 @@ void free_lexed_line(t_lexer *lexed_line)
     }
 }
 
-/*void free_tokenized_line(t_token *tokenized_line)
-{
-    t_token *tmp;
-    t_tokenpart *p;
-    t_tokenpart *next;
-
-    while (tokenized_line)
-    {
-        tmp = tokenized_line->next;
-
-        p = tokenized_line->parts;
-        while (p)
-        {
-            next = p->next;
-            free(p->value);
-            free(p);
-            p = next;
-        }
-        free(tokenized_line);
-        tokenized_line = tmp;
-    }
-}*/
-
 void free_tokenized_line(t_token *tokenized_line)
 { 
     t_token *temp_token;
@@ -64,11 +41,56 @@ void free_tokenized_line(t_token *tokenized_line)
     }
 }
 
+#include "minishell.h"
+#include <stdlib.h>
+
+static void	free_argv(char **argv)
+{
+	size_t	i;
+
+	if (!argv)
+		return ;
+	i = 0;
+	while (argv[i])
+		free(argv[i++]);
+	free(argv);
+}
+
+static void	free_ios(t_iospec *ios, size_t io_c)
+{
+	size_t	i;
+
+	if (!ios)
+		return ;
+	i = 0;
+	while (i < io_c)
+		free(ios[i++].arg);
+	free(ios);
+}
+
+void	free_exec(t_exec *e)
+{
+	size_t	i;
+
+	if (!e)
+		return ;
+	i = 0;
+	while (i < e->cmd_c)
+	{
+		free_argv(e->cmds[i].argv);
+		free_ios(e->cmds[i].ios, e->cmds[i].io_c);
+		free(e->cmds[i].resolved_path);
+		i++;
+	}
+	free(e->cmds);
+	free(e);
+}
+
 void handle_input(char *line, t_exec_ctx ctx)
 {
     t_lexer *lexed_line;
     t_token *tokenized_line;
-    //t_exec *exec;
+    t_exec *exec;
 
     lexed_line = lexer(line);
     if (!lexed_line)
@@ -79,8 +101,6 @@ void handle_input(char *line, t_exec_ctx ctx)
         free_lexed_line(lexed_line);
         return;
     }
-    print_tokenized_line(tokenized_line);
-
     if (validate_tokens(tokenized_line) == 0)
     {
         free_lexed_line(lexed_line);
@@ -89,15 +109,15 @@ void handle_input(char *line, t_exec_ctx ctx)
     }
     expand(tokenized_line, &ctx);
     print_tokenized_line(tokenized_line);
-    // Llamar a fill_exec y luego imprimir la estructura t_exec
-    /*exec = fill_exec(tokenized_line);
-    if (exec)
-    {
-        print_exec(exec);
-        // Liberar memoria de la estructura t_exec después de imprimir
-        free(exec->cmds);
-        free(exec);
-    }*/
+	exec = fill_exec(tokenized_line);
+    if (!exec)
+	{
+		free_lexed_line(lexed_line);
+		return (free_tokenized_line(tokenized_line));
+	}
+    // -- LLAMAR AL EXEC DE NICO
+	//print_exec(exec); //auxiliar de imprimir
+	free_exec(exec);
     free_lexed_line(lexed_line);
     free_tokenized_line(tokenized_line);
 }

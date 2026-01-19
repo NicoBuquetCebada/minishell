@@ -28,15 +28,15 @@ static int	check_pipe_edges(t_token *tok)
 	return (1);
 }
 
-static int	check_consecutive_pipes(t_token *tk)
+static int	check_consecutive_pipes(t_token *tok)
 {
 	t_tokenpart	*p;
 	int			prev_pipe;
 
 	prev_pipe = 0;
-	while (tk)
+	while (tok)
 	{
-		p = tk->parts;
+		p = tok->parts;
 		while (p)
 		{
 			if (p->type == PIPE)
@@ -52,7 +52,7 @@ static int	check_consecutive_pipes(t_token *tk)
 				prev_pipe = 0;
 			p = p->next;
 		}
-		tk = tk->next;
+		tok = tok->next;
 	}
 	return (1);
 }
