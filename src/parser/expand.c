@@ -1,4 +1,6 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "parser.h"
+#include "executor.h"
 
 /*
 Devuelve una cadena NUEVA con el valor de la variable.

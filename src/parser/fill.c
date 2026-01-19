@@ -1,4 +1,6 @@
 #include "minishell.h"
+#include "parser.h"
+#include "executor.h"
 
 typedef struct s_it
 {
@@ -59,7 +61,7 @@ static size_t	count_cmds(t_token *tokens)
 
 static void	set_role(t_command *c, size_t i, size_t total)
 {
-	if (total == 1) c->role = HEAD;
+	if (total == 1) c->role = TAIL;
 	else if (i == 0) c->role = HEAD;
 	else if (i + 1 == total) c->role = TAIL;
 	else c->role = MIDDLE;

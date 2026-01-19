@@ -1,4 +1,5 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "parser.h"
 
 static int	check_pipe_edges(t_token *tok)
 {

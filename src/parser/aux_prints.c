@@ -1,8 +1,6 @@
-#include "../include/minishell.h"
-
-// Función auxiliar para imprimir la estructura t_exec
 #include "minishell.h"
-#include <stdio.h>
+#include "parser.h"
+#include "executor.h"
 
 static const char	*role_str(t_role r)
 {

@@ -1,4 +1,5 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "parser.h"
 
 t_lexpart *new_part(t_lexer_type type, char *value)
 {

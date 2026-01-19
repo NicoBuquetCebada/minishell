@@ -1,4 +1,6 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "parser.h"
+#include "executor.h"
 
 void free_lexed_line(t_lexer *lexed_line)
 { 
@@ -40,9 +42,6 @@ void free_tokenized_line(t_token *tokenized_line)
         free(temp_token);
     }
 }
-
-#include "minishell.h"
-#include <stdlib.h>
 
 static void	free_argv(char **argv)
 {
@@ -108,7 +107,7 @@ void handle_input(char *line, t_exec_ctx ctx)
         return;
     }
     expand(tokenized_line, &ctx);
-    print_tokenized_line(tokenized_line);
+    /* print_tokenized_line(tokenized_line); */
 	exec = fill_exec(tokenized_line);
     if (!exec)
 	{
@@ -116,7 +115,8 @@ void handle_input(char *line, t_exec_ctx ctx)
 		return (free_tokenized_line(tokenized_line));
 	}
     // -- LLAMAR AL EXEC DE NICO
-	//print_exec(exec); //auxiliar de imprimir
+	exec_caller(&ctx, exec);
+	/* print_exec(exec); //auxiliar de imprimir */
 	free_exec(exec);
     free_lexed_line(lexed_line);
     free_tokenized_line(tokenized_line);
