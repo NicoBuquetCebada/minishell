@@ -62,8 +62,14 @@ static void	free_ios(t_iospec *ios, size_t io_c)
 	if (!ios)
 		return ;
 	i = 0;
-	while (i < io_c)
-		free(ios[i++].arg);
+    while (i < io_c)
+    {
+        if (ios[i].expand == -1)
+            unlink(ios[i].arg);
+        free(ios[i].arg);
+        i++;
+    }
+
 	free(ios);
 }
 
@@ -115,8 +121,12 @@ void handle_input(char *line, t_exec_ctx ctx)
 		return (free_tokenized_line(tokenized_line));
 	}
     // -- LLAMAR AL EXEC DE NICO
-	exec_caller(&ctx, exec);
-	/* print_exec(exec); //auxiliar de imprimir */
+	//exec_caller(&ctx, exec);
+    if (!process_heredocs(exec, &ctx)) {
+        printf("Error");
+     }
+     exec_caller(&ctx, exec);
+	 //print_exec(exec); //auxiliar de imprimir 
 	free_exec(exec);
     free_lexed_line(lexed_line);
     free_tokenized_line(tokenized_line);

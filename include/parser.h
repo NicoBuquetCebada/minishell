@@ -107,6 +107,7 @@ void print_lexed_line(t_lexer *lexed_line);
 void print_exec(t_exec *exec);
 void print_tokenized_line(t_token *tokenized_line);
 void	merge_words(t_token *toks);
-
+int	process_heredocs(t_exec *exec, t_exec_ctx *ctx);
+char    *expand_word(const char *w, t_exec_ctx *ctx);
 
 #endif

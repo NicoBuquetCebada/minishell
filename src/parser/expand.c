@@ -2,10 +2,6 @@
 #include "parser.h"
 #include "executor.h"
 
-/*
-Devuelve una cadena NUEVA con el valor de la variable.
-Si no existe, devuelve NULL (se tratará como "").
-*/
 char    *get_env_value(const char *key, t_exec_ctx *ctx)
 {
     int     i;
@@ -29,9 +25,6 @@ char    *get_env_value(const char *key, t_exec_ctx *ctx)
     return (NULL);
 }
 
-/*
-Concatena text al final de *result, liberando el antiguo *result.
-*/
 void    append_text(char **result, const char *text)
 {
     char    *temp;
@@ -53,9 +46,6 @@ static int  is_var_start(char c)
     return (ft_isalpha((unsigned char)c) || c == '_');
 }
 
-/*
-Maneja un '$' en w[i]. Devuelve el nuevo índice i tras la expansión.
-*/
 static int  expand_var(const char *w, int i, t_exec_ctx *ctx, char **res)
 {
     char    *key;
@@ -99,9 +89,6 @@ static int  expand_var(const char *w, int i, t_exec_ctx *ctx, char **res)
     return (i);
 }
 
-/*
-Copia literal desde w[i] hasta el próximo '$' o fin.
-*/
 static int  expand_literal(const char *w, int i, char **res)
 {
     int     start;
@@ -119,9 +106,6 @@ static int  expand_literal(const char *w, int i, char **res)
     return (i);
 }
 
-/*
-** Expande una palabra (sin comillas) usando ctx.
-*/
 char    *expand_word(const char *w, t_exec_ctx *ctx)
 {
     char    *res;
@@ -141,9 +125,6 @@ char    *expand_word(const char *w, t_exec_ctx *ctx)
     return (res);
 }
 
-/*
-Recorre todos los tokens y expande solo WORD que no vienen de comillas simples.
-*/
 void    expand(t_token *tokens, t_exec_ctx *ctx)
 {
     t_token     *cur;

@@ -7,14 +7,14 @@ t_tokentype set_type(t_lexpart *part)
         return WORD;
     if (ft_strncmp(part->value, "|", 1) == 0)
         return PIPE;
-    if (ft_strncmp(part->value, "<", 2) == 0)
-        return REDIR_IN;
-    if (ft_strncmp(part->value, ">", 2) == 0)
-        return REDIR_OUT;
     if (ft_strncmp(part->value, "<<", 2) == 0)
         return HEREDOC;
     if (ft_strncmp(part->value, ">>", 2) == 0)
         return APPEND;
+    if (ft_strncmp(part->value, "<", 1) == 0)
+        return REDIR_IN;
+    if (ft_strncmp(part->value, ">", 1) == 0)
+        return REDIR_OUT;
     return WORD; 
 }
 

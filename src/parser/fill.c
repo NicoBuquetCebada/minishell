@@ -123,11 +123,19 @@ static int	fill_seg(t_it *it, t_command *c, size_t wc)
 	{
 		if (is_redir(it->p->type))
 		{
-			c->ios[ri].type = map_iotype(it->p->type);
+			t_tokentype	op;
+
+			op = it->p->type;
+			c->ios[ri].type = map_iotype(op);
 			it_next(it);
 			c->ios[ri].arg = ft_strdup(it->p->value);
-			c->ios[ri].expand = (c->ios[ri].type != IO_FILE_HEREDOC);
-			ri++; it_next(it); continue ;
+			if (op == HEREDOC)
+				c->ios[ri].expand = (it->p->origin == IN_DEFAULT);
+			else
+				c->ios[ri].expand = 0;
+			ri++;
+			it_next(it);
+			continue ;
 		}
 		if (it->p->type == WORD && ai < wc)
 			c->argv[ai++] = ft_strdup(it->p->value);

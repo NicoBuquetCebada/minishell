@@ -100,7 +100,7 @@ int				is_absolute(char *cmd);
 char			*resolve_absolute(char *cmd);
 char			*resolve_cmd(char *cmd, char **envp);
 
-int				process_heredocs(t_exec *exec);
+//int				process_heredocs(t_exec *exec);
 
 int				is_builtin(char *cmd);
 int				is_builtin_stateful(t_exec *exec);
