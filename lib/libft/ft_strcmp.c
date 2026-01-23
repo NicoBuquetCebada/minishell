@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nico <nico@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/19 19:12:51 by nico              #+#    #+#             */
-/*   Updated: 2024/09/27 14:58:35 by nico             ###   ########.fr       */
+/*   Created: 2026/01/23 21:32:29 by irrevuel          #+#    #+#             */
+/*   Updated: 2026/01/23 22:02:27 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	ft_strcmp(const char *s1, const char *s2)
 {
 	size_t	i;
 
-	i = 0;
+    i = 0;
 	while (s1[i] || s2[i])
 	{
 		if (s1[i] != s2[i])

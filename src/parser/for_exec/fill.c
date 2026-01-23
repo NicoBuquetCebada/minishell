@@ -1,24 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fill.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/24 00:10:37 by irrevuel          #+#    #+#             */
+/*   Updated: 2026/01/24 00:24:14 by irrevuel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "executor.h"
 #include "minishell.h"
 #include "parser.h"
-#include "executor.h"
 
-typedef struct s_it
+static int	redir_iotype(t_tokentype t)
 {
-	t_token		*t;
-	t_tokenpart	*p;
-}	t_it;
-
-static int	is_redir(t_tokentype t)
-{
-	return (t == REDIR_IN || t == REDIR_OUT || t == APPEND || t == HEREDOC);
-}
-
-static t_iotype	map_iotype(t_tokentype t)
-{
-	if (t == REDIR_IN) return (IO_FILE_IN);
-	if (t == REDIR_OUT) return (IO_FILE_TRUNC);
-	if (t == APPEND) return (IO_FILE_APPEND);
-	return (IO_FILE_HEREDOC);
+	if (t == REDIR_IN)
+		return (IO_FILE_IN);
+	if (t == REDIR_OUT)
+		return (IO_FILE_TRUNC);
+	if (t == APPEND)
+		return (IO_FILE_APPEND);
+	if (t == HEREDOC)
+		return (IO_FILE_HEREDOC);
+	return (-1);
 }
 
 static void	it_init(t_it *it, t_token *t)
@@ -43,6 +49,22 @@ static void	it_next(t_it *it)
 	it->p = (it->t ? it->t->parts : NULL);
 }
 
+static void	init_cmd(t_command *c, size_t i, size_t total)
+{
+	c->argv = NULL;
+	c->ios = NULL;
+	c->io_c = 0;
+	c->resolved_path = NULL;
+	if (total == 1)
+		c->role = TAIL;
+	else if (i == 0)
+		c->role = HEAD;
+	else if (i + 1 == total)
+		c->role = TAIL;
+	else
+		c->role = MIDDLE;
+}
+
 static size_t	count_cmds(t_token *tokens)
 {
 	t_it	it;
@@ -59,34 +81,21 @@ static size_t	count_cmds(t_token *tokens)
 	return (c);
 }
 
-static void	set_role(t_command *c, size_t i, size_t total)
-{
-	if (total == 1) c->role = TAIL;
-	else if (i == 0) c->role = HEAD;
-	else if (i + 1 == total) c->role = TAIL;
-	else c->role = MIDDLE;
-}
-
-static void	init_cmd(t_command *c)
-{
-	c->argv = NULL;
-	c->ios = NULL;
-	c->io_c = 0;
-	c->resolved_path = NULL;
-	c->role = HEAD;
-}
-
 static void	count_seg(t_it it, size_t *wc, size_t *rc)
 {
+	int	r;
+
 	*wc = 0;
 	*rc = 0;
 	while (it.p && it.p->type != PIPE)
 	{
-		if (is_redir(it.p->type))
+		r = redir_iotype(it.p->type);
+		if (r != -1)
 		{
 			(*rc)++;
 			it_next(&it);
-			if (it.p) it_next(&it);
+			if (it.p)
+				it_next(&it);
 			continue ;
 		}
 		if (it.p->type == WORD)
@@ -97,10 +106,14 @@ static void	count_seg(t_it it, size_t *wc, size_t *rc)
 
 static int	alloc_cmd(t_command *c, size_t wc, size_t rc)
 {
+	size_t	i;
+
 	c->argv = (char **)malloc(sizeof(char *) * (wc + 1));
 	if (!c->argv)
 		return (0);
-	c->argv[0] = NULL;
+	i = 0;
+	while (i < wc + 1)
+		c->argv[i++] = NULL;
 	c->ios = NULL;
 	c->io_c = rc;
 	if (rc)
@@ -116,23 +129,20 @@ static int	fill_seg(t_it *it, t_command *c, size_t wc)
 {
 	size_t	ai;
 	size_t	ri;
+	int		r;
 
 	ai = 0;
 	ri = 0;
 	while (it->p && it->p->type != PIPE)
 	{
-		if (is_redir(it->p->type))
+		r = redir_iotype(it->p->type);
+		if (r != -1)
 		{
-			t_tokentype	op;
-
-			op = it->p->type;
-			c->ios[ri].type = map_iotype(op);
+			c->ios[ri].type = (t_iotype)r;
 			it_next(it);
 			c->ios[ri].arg = ft_strdup(it->p->value);
-			if (op == HEREDOC)
-				c->ios[ri].expand = (it->p->origin == IN_DEFAULT);
-			else
-				c->ios[ri].expand = 0;
+			c->ios[ri].expand = (r == IO_FILE_HEREDOC
+					&& it->p->origin == IN_DEFAULT);
 			ri++;
 			it_next(it);
 			continue ;
@@ -145,7 +155,7 @@ static int	fill_seg(t_it *it, t_command *c, size_t wc)
 	return (1);
 }
 
-static void	free_cmd_arrays(t_command *c)
+static void	free_one_cmd(t_command *c)
 {
 	size_t	i;
 
@@ -166,7 +176,7 @@ static void	free_exec_partial(t_exec *e, size_t n)
 
 	i = 0;
 	while (i < n)
-		free_cmd_arrays(&e->cmds[i++]);
+		free_one_cmd(&e->cmds[i++]);
 	free(e->cmds);
 	free(e);
 }
@@ -175,20 +185,20 @@ t_exec	*fill_exec(t_token *tokens)
 {
 	t_exec	*e;
 	t_it	it;
-	size_t	i, wc, rc;
 
+	size_t i, wc, rc;
 	e = (t_exec *)malloc(sizeof(t_exec));
 	if (!e)
-        return (NULL);
+		return (NULL);
 	e->cmd_c = count_cmds(tokens);
 	e->cmds = (t_command *)malloc(sizeof(t_command) * e->cmd_c);
-	if (!e->cmds) return (free(e), NULL);
-	i = 0;
+	if (!e->cmds)
+		return (free(e), NULL);
 	it_init(&it, tokens);
+	i = 0;
 	while (i < e->cmd_c)
 	{
-		init_cmd(&e->cmds[i]);
-		set_role(&e->cmds[i], i, e->cmd_c);
+		init_cmd(&e->cmds[i], i, e->cmd_c);
 		count_seg(it, &wc, &rc);
 		if (!alloc_cmd(&e->cmds[i], wc, rc))
 			return (free_exec_partial(e, i), NULL);

@@ -77,16 +77,16 @@ typedef struct s_cmd_info
     size_t redir_count;
 } t_cmd_info;
 
-typedef struct s_exec_info
-{
-    size_t cmd_count;
-    t_cmd_info *cmds;
-} t_exec_info;
 
+typedef struct s_it
+{
+	t_token		*t;
+	t_tokenpart	*p;
+}	t_it;
 
 // funciones en plan cutre xd
 
-void handle_input(char *line,  t_exec_ctx ctx);
+void	handle_input(char *line, t_exec_ctx *ctx);
 t_lexer *lexer(char *line);
 void	add_node(t_lexer **list);
 void	add_part(t_lexer *tok, t_lexer_type type, char *value);
@@ -99,7 +99,6 @@ t_tokenpart *new_token_part(t_tokentype type, char *value, t_lexer_type origin);
 void add_token(t_token **list);
 void add_token_part(t_token *tok, t_tokentype type, char *value, t_lexer_type origin);
 t_tokentype set_type(t_lexpart *part);
-//void merge_and_expand(t_token *tokenized_line, t_exec_ctx *ctx);
 void expand(t_token *tokens, t_exec_ctx *ctx);
 int validate_tokens(t_token *tokens);
 t_exec *fill_exec(t_token *tokens);
@@ -109,5 +108,13 @@ void print_tokenized_line(t_token *tokenized_line);
 void	merge_words(t_token *toks);
 int	process_heredocs(t_exec *exec, t_exec_ctx *ctx);
 char    *expand_word(const char *w, t_exec_ctx *ctx);
+int	handle_mode(char *line, int i, t_lexer *tok, t_lexer_type mode);
+int	is_var_start(char c);
+void	append_text(char **result, const char *text);
+char	*get_env_value(const char *key, t_exec_ctx *ctx);
+void free_lexed_line(t_lexer *lexed_line);
+void free_tokenized_line(t_token *tokenized_line);
+void	free_exec(t_exec *e);
+void	cleanup_input(t_lexer *lex, t_token *tok, t_exec *exec);
 
 #endif

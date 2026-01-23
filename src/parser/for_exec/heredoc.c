@@ -1,5 +1,17 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/24 00:09:24 by irrevuel          #+#    #+#             */
+/*   Updated: 2026/01/24 00:09:25 by irrevuel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
+#include "minishell.h"
 #include "parser.h"
 
 static int	is_delim(char *line, char *delim)
@@ -69,12 +81,12 @@ static int	fill_tmpfile(int fd, t_iospec *io, t_exec_ctx *ctx)
 		if (io->expand == 1)
 			out = expand_word(line, ctx);
 		if (!write_ln(fd, out))
-        {
-            if (io->expand == 1)
-                free(out);
-            free(line);
-            return (0);
-        }
+		{
+			if (io->expand == 1)
+				free(out);
+			free(line);
+			return (0);
+		}
 		if (io->expand == 1)
 			free(out);
 		free(line);

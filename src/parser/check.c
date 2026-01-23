@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/23 23:57:43 by irrevuel          #+#    #+#             */
+/*   Updated: 2026/01/23 23:58:02 by irrevuel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include "parser.h"
 
@@ -58,6 +70,24 @@ static int	check_consecutive_pipes(t_token *tok)
 	return (1);
 }
 
+static int	check_one_redir(t_token **token, t_tokenpart **p)
+{
+	if ((*p)->next && (*p)->next->type == WORD)
+	{
+		*p = (*p)->next;
+		return (1);
+	}
+	if ((*token)->next && (*token)->next->parts
+		&& (*token)->next->parts->type == WORD)
+	{
+		*token = (*token)->next;
+		*p = (*token)->parts;
+		return (1);
+	}
+	printf("Syntax error: expected WORD after redirection\n");
+	return (0);
+}
+
 static int	check_redirections(t_token *token)
 {
 	t_tokenpart	*p;
@@ -67,24 +97,10 @@ static int	check_redirections(t_token *token)
 		p = token->parts;
 		while (p)
 		{
-			if (p->type == REDIR_IN || p->type == REDIR_OUT
-				|| p->type == APPEND || p->type == HEREDOC)
-			{
-				if (p->next && p->next->type == WORD)
-				{
-					p = p->next;
-					continue ;
-				}
-				if (token->next && token->next->parts
-					&& token->next->parts->type == WORD)
-				{
-					token = token->next;
-					p = token->parts;
-					continue ;
-				}
-				printf("Syntax error: expected WORD after redirection\n");
-				return (0);
-			}
+			if (p->type == REDIR_IN || p->type == REDIR_OUT || p->type == APPEND
+				|| p->type == HEREDOC)
+				if (!check_one_redir(&token, &p))
+					return (0);
 			p = p->next;
 		}
 		token = token->next;
@@ -96,8 +112,7 @@ int	validate_tokens(t_token *tokens)
 {
 	if (!tokens)
 		return (1);
-	if (!check_pipe_edges(tokens)
-		|| !check_consecutive_pipes(tokens)
+	if (!check_pipe_edges(tokens) || !check_consecutive_pipes(tokens)
 		|| !check_redirections(tokens))
 		return (0);
 	return (1);
