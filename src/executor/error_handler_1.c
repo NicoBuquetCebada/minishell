@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:35:50 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:40:43 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/24 21:49:29 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,16 @@ void	ft_error(int status)
 {
 	perror("minishell");
 	exit(status);
+}
+
+int	ft_cmd_error(char *cmd, char *arg, char *message, int status)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(message, 2);
+	ft_putchar_fd('\n', 2);
+	return (status);
 }

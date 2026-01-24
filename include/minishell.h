@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 19:33:46 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:38:07 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/24 23:56:32 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "../lib/libft/libft.h"
 # include "libft.h"
-
 # include <ctype.h>
 # include <dirent.h>
 # include <errno.h>
@@ -30,5 +29,6 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+# include <limits.h>
 
 #endif

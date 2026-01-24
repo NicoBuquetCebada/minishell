@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 20:10:52 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 00:07:40 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,11 @@ int main(int argc, char *argv[], char *envp[])
 {
 	(void)argc;
 	(void)argv;
-	(void)envp;
     char *line;
     t_exec_ctx ctx;
     int i;
 
-    ctx.envp = envp;
+    ctx.envp = dup_envp(envp);
     ctx.last_status = 0;
     ctx.interactive = 1;
     i = 0;
@@ -36,5 +35,6 @@ int main(int argc, char *argv[], char *envp[])
         i++;
     }
     clear_history(); // rl_clear_history en Linux
+	free_envp(ctx.envp);
     return 0;
 }

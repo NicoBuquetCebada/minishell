@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:40:55 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/24 23:22:04 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
 int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
 {
 	// Ignorar completamente SIGINT y restaurarlo antes de devolver el control al padre (mirar si genera problemas hacerlo en este punto)
+	ctx->interactive = 1;
 	if (execute(ctx, exec) == -1)
 	{
 		perror("minishell");
@@ -42,13 +43,9 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 	i = 0;
 	while (i < exec->cmd_c)
 	{
-		// Es solo en el caso de ser 1 solo comando, es fuera del while (estoy con el cd)
-		/* if (is_builtin_stateful(exec))
-		{
-			spawn_builtin();
-			i++;
-			continue ;
-		} */
+		if (is_builtin_stateful(exec))
+			return (exec_builtin(ctx, exec->cmds[i].argv));
+		ctx->interactive = 0;
 		pids[i] = spawn_pipe(ctx, &exec->cmds[i], &read_fd);
 		if (pids[i] == -1)
 			return (wait_pids(ctx, pids, i), free(pids), -1);
