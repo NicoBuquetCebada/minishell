@@ -6,19 +6,19 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 20:08:59 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/24 23:53:03 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 22:27:48 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "minishell.h"
 
-void	exec_cmd(t_exec_ctx *ctx, t_command *cmd)
+void	exec_cmd(t_exec_ctx *ctx, t_exec *exec, t_command *cmd)
 {
 	if (process_redirs(cmd) == -1)
 		ft_error(1);
 	if (is_builtin(cmd->argv[0]))
-		exec_builtin(ctx, cmd->argv);
+		exec_builtin(ctx, exec, cmd->argv, 1);
 	cmd->resolved_path = resolve_path(cmd->argv[0], ctx->envp);
 	if (!cmd->resolved_path)
 		ft_error(1);
@@ -28,7 +28,7 @@ void	exec_cmd(t_exec_ctx *ctx, t_command *cmd)
 	ft_error(126);
 }
 
-int	exec_builtin(t_exec_ctx *ctx, char **argv)
+int	exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child)
 {
 	size_t	len;
 	int		status;
@@ -45,7 +45,11 @@ int	exec_builtin(t_exec_ctx *ctx, char **argv)
 		status = ft_unset(ctx, argv);
 	if (ft_strncmp("export", argv[0], len) == 0)
 		status = ft_export(ctx, argv);
-	if (!ctx->interactive)
+	if (ft_strncmp("cd", argv[0], len) == 0)
+		status = ft_cd(ctx, argv);
+	if (ft_strncmp("exit", argv[0], len) == 0)
+		status = ft_exit(ctx, exec, child);
+	if (child)
 		exit(status);
 	return (status);
 }

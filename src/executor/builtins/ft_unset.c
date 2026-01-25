@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 22:48:33 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/24 23:08:37 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 12:05:30 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_unset(t_exec_ctx *ctx, char **argv)
 	while (argv[i])
 	{
 		if (!valid_key(argv[i]) || ft_strchr(argv[i], '=') != NULL)
-			status = ft_cmd_error("unset", argv[i], "not a valid identifier",
+			status = ft_error_msg("unset", argv[i], "not a valid identifier",
 					1);
 		else
 			remove_env(ctx, argv[i]);

@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 18:33:04 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/24 23:53:32 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 22:32:47 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ int	is_builtin(char *cmd)
 	len = ft_strlen(cmd);
 	if (ft_strncmp("echo", cmd, len) == 0 || ft_strncmp("pwd", cmd, len) == 0
 		|| ft_strncmp("env", cmd, len) == 0 || ft_strncmp("unset", cmd,
-			len) == 0 || ft_strncmp("export", cmd, len) == 0)
+			len) == 0 || ft_strncmp("export", cmd, len) == 0 || ft_strncmp("cd",
+			cmd, len) == 0 || ft_strncmp("exit", cmd, len) == 0)
 		return (1);
 	return (0);
 }

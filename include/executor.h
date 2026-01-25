@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/24 23:56:39 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 22:47:26 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,16 @@ typedef struct s_exec
 ** - envp          : modifiable environment array
 ** - last_status   : last pipeline exit status (used for $? expansion)
 ** - interactive   : 1 if shell is interactive, 0 otherwise
+** - wd				: working directory
+** - old_wd			: old working directory
 */
 typedef struct s_exec_ctx
 {
 	char		**envp;
 	int			last_status;
 	int			interactive;
+	char		*wd;
+	char		*old_wd;
 }				t_exec_ctx;
 
 char			*resolve_path(char *cmd, char **envp);
@@ -102,20 +106,19 @@ int				is_absolute(char *cmd);
 char			*resolve_absolute(char *cmd);
 char			*resolve_cmd(char *cmd, char **envp);
 
-int				process_heredocs(t_exec *exec);
-
 int				is_builtin(char *cmd);
 int				is_builtin_stateful(t_exec *exec);
 
 int				exec_caller(t_exec_ctx *ctx, t_exec *exec);
 int				process_redirs(t_command *cmd);
-void			exec_cmd(t_exec_ctx *ctx, t_command *cmd);
-int				exec_builtin(t_exec_ctx *ctx, char **argv);
+void			exec_cmd(t_exec_ctx *ctx, t_exec *exec, t_command *cmd);
+int				exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child);
 int				pipe_init(t_command *cmd, int pipe_fd[2]);
 void			connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
 
+// Builtins
 void			ft_echo(char **argv);
 void			ft_pwd(void);
 void			ft_env(char **envp);
@@ -127,7 +130,9 @@ int				append_entry(t_exec_ctx *ctx, char *entry);
 int				replace_entry_at(t_exec_ctx *ctx, char *entry, size_t i);
 int				set_kv(t_exec_ctx *ctx, char *arg);
 int				ensure_key(t_exec_ctx *ctx, char *key);
+int				ft_cd(t_exec_ctx *ctx, char **argv);
 
+// Error Handler
 int				command_not_found_error(char *cmd);
 int				no_such_file_error(char *path, int redir);
 int				is_a_directory_error(char *dir, int redir);
@@ -136,13 +141,19 @@ int				exec_format_error(char *cmd);
 void			redir_error(char *file, int error);
 void			bin_error(char *file, int error);
 void			ft_error(int status);
-int				ft_cmd_error(char *cmd, char *arg, char *message, int status);
+int				ft_error_msg(char *cmd, char *arg, char *message, int status);
+int				cd_error(char *path);
+int				ft_exit(t_exec_ctx *ctx, t_exec *exec, int child);
 
+// Signal Handler
 void			handle_signals(t_exec_ctx *ctx, int status);
 void			restore_signals(void);
 
 // Parser
 char			**dup_envp(char **envp);
 void			free_envp(char **envp);
+char			*dup_cwd(void);
+void			clean_shell(t_exec_ctx *ctx, t_exec *exec);
+void			clean_ctx(t_exec_ctx *ctx);
 
 #endif

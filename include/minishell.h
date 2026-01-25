@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 19:33:46 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/24 23:56:32 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 19:55:29 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,7 @@
 # include <termios.h>
 # include <unistd.h>
 # include <limits.h>
+
+extern int g_status;
 
 #endif
