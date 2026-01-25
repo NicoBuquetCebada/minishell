@@ -1,15 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   merge.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/23 22:46:08 by irrevuel          #+#    #+#             */
+/*   Updated: 2026/01/23 23:52:36 by irrevuel         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include "parser.h"
-
-static size_t	ms_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
-}
 
 static char	*ms_join(const char *a, const char *b)
 {
@@ -18,8 +20,8 @@ static char	*ms_join(const char *a, const char *b)
 	size_t	i;
 	char	*r;
 
-	la = ms_strlen(a);
-	lb = ms_strlen(b);
+	la = ft_strlen(a);
+	lb = ft_strlen(b);
 	r = (char *)malloc(la + lb + 1);
 	if (!r)
 		return (NULL);
@@ -75,7 +77,7 @@ void	merge_words(t_token *toks)
 	while (toks)
 	{
 		if (toks->parts && !ms_merge_parts(toks->parts))
-			return;
+			return ;
 		toks = toks->next;
 	}
 }

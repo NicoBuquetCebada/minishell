@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 22:47:26 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 23:05:43 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define EXECUTOR_H
 
 # include <stddef.h>
+
 /*
 ** Role in the pipeline:
 **		HEAD	-> First command of the pipeline
@@ -101,18 +102,24 @@ typedef struct s_exec_ctx
 	char		*old_wd;
 }				t_exec_ctx;
 
+/* FUNCTIONS */
+
+// Path Resolver
 char			*resolve_path(char *cmd, char **envp);
 int				is_absolute(char *cmd);
 char			*resolve_absolute(char *cmd);
 char			*resolve_cmd(char *cmd, char **envp);
 
+// Builtin Conditionals
 int				is_builtin(char *cmd);
 int				is_builtin_stateful(t_exec *exec);
 
+// Execution Core
 int				exec_caller(t_exec_ctx *ctx, t_exec *exec);
 int				process_redirs(t_command *cmd);
 void			exec_cmd(t_exec_ctx *ctx, t_exec *exec, t_command *cmd);
-int				exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child);
+int				exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv,
+					int child);
 int				pipe_init(t_command *cmd, int pipe_fd[2]);
 void			connect_childs(t_command *cmd, int *read_fd, int pipe_fd[2]);
 void			close_fds(t_command *cmd, int *read_fd, int pipe_fd[2]);
@@ -149,7 +156,7 @@ int				ft_exit(t_exec_ctx *ctx, t_exec *exec, int child);
 void			handle_signals(t_exec_ctx *ctx, int status);
 void			restore_signals(void);
 
-// Parser
+// Other
 char			**dup_envp(char **envp);
 void			free_envp(char **envp);
 char			*dup_cwd(void);
