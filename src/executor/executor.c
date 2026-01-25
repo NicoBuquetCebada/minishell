@@ -6,20 +6,22 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:40:55 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 22:30:29 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "executor.h"
+#include "minishell.h"
+
+int				g_status = 0;
 
 static int		execute(t_exec_ctx *ctx, t_exec *exec);
-static pid_t	spawn_pipe(t_exec_ctx *ctx, t_command *cmd, int *read_fd);
+static pid_t	spawn_pipe(t_exec_ctx *ctx, t_exec *exec, t_command *cmd,
+					int *read_fd);
 static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
 
 int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
 {
-	// Ignorar completamente SIGINT y restaurarlo antes de devolver el control al padre (mirar si genera problemas hacerlo en este punto)
 	if (execute(ctx, exec) == -1)
 	{
 		perror("minishell");
@@ -42,14 +44,9 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 	i = 0;
 	while (i < exec->cmd_c)
 	{
-		// Es solo en el caso de ser 1 solo comando, es fuera del while (estoy con el cd)
-		/* if (is_builtin_stateful(exec))
-		{
-			spawn_builtin();
-			i++;
-			continue ;
-		} */
-		pids[i] = spawn_pipe(ctx, &exec->cmds[i], &read_fd);
+		if (is_builtin_stateful(exec))
+			return (free(pids), exec_builtin(ctx, exec, exec->cmds[i].argv, 0));
+		pids[i] = spawn_pipe(ctx, exec, &exec->cmds[i], &read_fd);
 		if (pids[i] == -1)
 			return (wait_pids(ctx, pids, i), free(pids), -1);
 		i++;
@@ -59,15 +56,8 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 	return (0);
 }
 
-/* static int	spawn_child(t_exec_ctx *ctx, t_exec *exec, pid_t **pids)
-{
-	pids[i] = spawn_pipe(ctx, &exec->cmds[i], &read_fd);
-	if (pids[i] == -1)
-		return (wait_pids(ctx, pids, i), free(pids), -1);
-	i++;
-} */
-
-static pid_t	spawn_pipe(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
+static pid_t	spawn_pipe(t_exec_ctx *ctx, t_exec *exec, t_command *cmd,
+		int *read_fd)
 {
 	pid_t	pid;
 	int		pipe_fd[2];
@@ -84,7 +74,7 @@ static pid_t	spawn_pipe(t_exec_ctx *ctx, t_command *cmd, int *read_fd)
 		restore_signals();
 		connect_childs(cmd, read_fd, pipe_fd);
 		close_fds(cmd, read_fd, pipe_fd);
-		exec_cmd(ctx, cmd);
+		exec_cmd(ctx, exec, cmd);
 	}
 	update_read_fd(cmd, read_fd, pipe_fd);
 	return (pid);

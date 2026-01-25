@@ -4,16 +4,21 @@
 
 static const char	*role_str(t_role r)
 {
-	if (r == HEAD) return ("HEAD");
-	if (r == MIDDLE) return ("MIDDLE");
+	if (r == HEAD)
+		return ("HEAD");
+	if (r == MIDDLE)
+		return ("MIDDLE");
 	return ("TAIL");
 }
 
 static const char	*io_str(t_iotype t)
 {
-	if (t == IO_FILE_IN) return ("<");
-	if (t == IO_FILE_TRUNC) return (">");
-	if (t == IO_FILE_APPEND) return (">>");
+	if (t == IO_FILE_IN)
+		return ("<");
+	if (t == IO_FILE_TRUNC)
+		return (">");
+	if (t == IO_FILE_APPEND)
+		return (">>");
 	return ("<<");
 }
 

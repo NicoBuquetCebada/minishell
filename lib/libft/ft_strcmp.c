@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/07 14:13:22 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:41:05 by nbuquet-         ###   ########.fr       */
+/*   Created: 2026/01/23 21:32:29 by irrevuel          #+#    #+#             */
+/*   Updated: 2026/01/25 23:10:48 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "executor.h"
+#include "libft.h"
 
-void	ft_pwd(void)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	char	*cwd;
+	size_t	i;
 
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		ft_error(1);
-	ft_putstr_fd(cwd, 1);
-	ft_putchar_fd('\n', 1);
-	free(cwd);
-	exit(0);
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
 }

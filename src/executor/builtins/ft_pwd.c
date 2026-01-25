@@ -1,39 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 23:14:22 by nbuquet-         ###   ########.fr       */
+/*   Created: 2025/12/07 14:13:22 by nbuquet-          #+#    #+#             */
+/*   Updated: 2026/01/23 21:46:02 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "minishell.h"
-#include "parser.h"
 
-int	main(int argc, char *argv[], char *envp[])
+void	ft_pwd(void)
 {
-	char		*line;
-	t_exec_ctx	ctx;
+	char	*cwd;
 
-	(void)argc;
-	(void)argv;
-	ctx.envp = dup_envp(envp);
-	ctx.last_status = 0;
-	ctx.interactive = isatty(STDIN_FILENO);
-	ctx.old_wd = NULL;
-	ctx.wd = dup_cwd();
-	while (1)
-	{
-		line = readline("[minishell]$ ");
-		add_history(line);
-		handle_input(line, &ctx);
-		free(line);
-	}
-	// clear_history();
-	clean_ctx(&ctx);
-	return (0);
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		ft_error(1);
+	ft_putstr_fd(cwd, 1);
+	ft_putchar_fd('\n', 1);
+	free(cwd);
+	exit(0);
 }
