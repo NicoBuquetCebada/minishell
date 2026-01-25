@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 23:05:43 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 00:31:38 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ typedef struct s_exec
 /*
 ** Execution context stored globally:
 ** - envp          : modifiable environment array
-** - last_status   : last pipeline exit status (used for $? expansion)
 ** - interactive   : 1 if shell is interactive, 0 otherwise
 ** - wd				: working directory
 ** - old_wd			: old working directory
@@ -96,7 +95,6 @@ typedef struct s_exec
 typedef struct s_exec_ctx
 {
 	char		**envp;
-	int			last_status;
 	int			interactive;
 	char		*wd;
 	char		*old_wd;
@@ -138,6 +136,7 @@ int				replace_entry_at(t_exec_ctx *ctx, char *entry, size_t i);
 int				set_kv(t_exec_ctx *ctx, char *arg);
 int				ensure_key(t_exec_ctx *ctx, char *key);
 int				ft_cd(t_exec_ctx *ctx, char **argv);
+char			*get_env(char **envp, const char *key);
 
 // Error Handler
 int				command_not_found_error(char *cmd);
@@ -162,5 +161,6 @@ void			free_envp(char **envp);
 char			*dup_cwd(void);
 void			clean_shell(t_exec_ctx *ctx, t_exec *exec);
 void			clean_ctx(t_exec_ctx *ctx);
+void			inc_level(t_exec_ctx *ctx);
 
 #endif

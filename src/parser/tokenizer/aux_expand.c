@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   aux_expand.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 23:51:36 by irrevuel          #+#    #+#             */
-/*   Updated: 2026/01/23 23:51:54 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/26 00:30:08 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*get_env_value(const char *key, t_exec_ctx *ctx)
 	size_t	key_len;
 
 	if (ft_strncmp(key, "?", 2) == 0)
-		return (ft_itoa(ctx->last_status));
+		return (ft_itoa(g_status));
 	key_len = ft_strlen(key);
 	i = 0;
 	while (ctx->envp[i])

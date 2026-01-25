@@ -1,32 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal_handler.c                                   :+:      :+:    :+:   */
+/*   level_controller.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/08 14:27:58 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 00:31:55 by nbuquet-         ###   ########.fr       */
+/*   Created: 2026/01/25 23:30:49 by nbuquet-          #+#    #+#             */
+/*   Updated: 2026/01/25 23:41:12 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "executor.h"
+#include "minishell.h"
 
-void	handle_signals(t_exec_ctx *ctx, int status)
+void	inc_level(t_exec_ctx *ctx)
 {
-	int	sigv;
+	char	*val;
+	int		lvl;
+	char	*lvl_s;
+	char	*kv;
 
-	sigv = WTERMSIG(status);
-	g_status = 128 + sigv;
-	if (sigv == 2)
-		ft_putchar_fd('\n', 1);
-	if (sigv == 3)
-		ft_putstr_fd("Quit (core dumped)\n", 1);
-}
-
-void	restore_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	val = get_env(ctx->envp, "SHLVL");
+	if (val)
+		lvl = ft_atoi(val) + 1;
+	else
+		lvl = 1;
+	lvl_s = ft_itoa(lvl);
+	if (!lvl_s)
+		return ;
+	kv = ft_strjoin("SHLVL=", lvl_s);
+	free(lvl_s);
+	if (!kv)
+		return ;
+	set_kv(ctx, kv);
+	free(kv);
 }
