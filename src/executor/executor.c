@@ -6,14 +6,12 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 22:30:29 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 00:32:40 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "minishell.h"
-
-int				g_status = 0;
 
 static int		execute(t_exec_ctx *ctx, t_exec *exec);
 static pid_t	spawn_pipe(t_exec_ctx *ctx, t_exec *exec, t_command *cmd,
@@ -25,7 +23,7 @@ int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
 	if (execute(ctx, exec) == -1)
 	{
 		perror("minishell");
-		ctx->last_status = 1;
+		g_status = 1;
 		return (1);
 	}
 	return (0);
@@ -99,7 +97,7 @@ static void	wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c)
 		if (ret != -1)
 		{
 			if (WIFEXITED(status))
-				ctx->last_status = WEXITSTATUS(status);
+				g_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
 				handle_signals(ctx, status);
 		}

@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 22:48:33 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 12:05:30 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 00:23:22 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	valid_key(char *key)
 	if (ft_isalpha(key[i]) == 0 && key[i] != '_')
 		return (0);
 	i++;
-	while (key[i])
+	while (key[i] && key[i] != '=')
 	{
 		if (ft_isalnum(key[i]) == 0 && key[i] != '_')
 			return (0);

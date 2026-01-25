@@ -6,14 +6,13 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/25 11:27:40 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 19:28:31 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/25 23:35:05 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "minishell.h"
 
-static char	*get_env(char **envp, const char *key);
 static int	change_directory(t_exec_ctx *ctx, char *path);
 static void	update_wd(t_exec_ctx *ctx, char *wd);
 
@@ -41,7 +40,7 @@ int	ft_cd(t_exec_ctx *ctx, char **argv)
 	return (!change_directory(ctx, argv[1]));
 }
 
-static char	*get_env(char **envp, const char *key)
+char	*get_env(char **envp, const char *key)
 {
 	int		i;
 	char	*tmp;

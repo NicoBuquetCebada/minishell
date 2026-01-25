@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 22:58:26 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 12:05:30 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 00:28:33 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,12 @@ int	ft_export(t_exec_ctx *ctx, char **argv)
 		return (ft_env(ctx->envp), 0);
 	while (argv[i])
 	{
-		if (ft_strchr(argv[i], '=') != NULL)
+		if (!valid_key(argv[i]))
+			status = ft_error_msg("export", argv[i], "not a valid identifier",
+					1);
+		else if (ft_strchr(argv[i], '=') != NULL)
 		{
 			if (set_kv(ctx, argv[i]) != 0)
-				status = ft_error_msg("export", argv[i],
-						"not a valid identifier", 1);
-		}
-		else
-		{
-			if (!valid_key(argv[i]) || ensure_key(ctx, argv[i]) != 0)
 				status = ft_error_msg("export", argv[i],
 						"not a valid identifier", 1);
 		}
