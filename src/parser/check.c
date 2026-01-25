@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 23:57:43 by irrevuel          #+#    #+#             */
-/*   Updated: 2026/01/23 23:58:02 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/24 13:55:47 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	check_pipe_edges(t_token *tok)
 		return (1);
 	if (tok->parts && tok->parts->type == PIPE)
 	{
-		printf("Syntax error: unexpected token '|'\n");
+		ft_putstr_fd("Syntax error: unexpected token '|'\n", 2);
 		return (0);
 	}
 	last = tok;
@@ -35,7 +35,7 @@ static int	check_pipe_edges(t_token *tok)
 		p = p->next;
 	if (p->type == PIPE)
 	{
-		printf("Syntax error: unexpected token '|'\n");
+		ft_putstr_fd("Syntax error: unexpected token '|'\n", 2);
 		return (0);
 	}
 	return (1);
@@ -56,7 +56,7 @@ static int	check_consecutive_pipes(t_token *tok)
 			{
 				if (prev_pipe)
 				{
-					printf("Syntax error: unexpected token '|'\n");
+					ft_putstr_fd("Syntax error: unexpected token '|'\n", 2);
 					return (0);
 				}
 				prev_pipe = 1;
@@ -84,7 +84,7 @@ static int	check_one_redir(t_token **token, t_tokenpart **p)
 		*p = (*token)->parts;
 		return (1);
 	}
-	printf("Syntax error: expected WORD after redirection\n");
+	ft_putstr_fd("Syntax error: expected WORD after redirection\n", 2);
 	return (0);
 }
 

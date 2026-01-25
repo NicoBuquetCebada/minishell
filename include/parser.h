@@ -116,5 +116,7 @@ void free_lexed_line(t_lexer *lexed_line);
 void free_tokenized_line(t_token *tokenized_line);
 void	free_exec(t_exec *e);
 void	cleanup_input(t_lexer *lex, t_token *tok, t_exec *exec);
+int	is_delim(char *line, char *delim);
+int	write_ln(int fd, char *s);
 
 #endif

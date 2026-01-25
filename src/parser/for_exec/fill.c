@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 00:10:37 by irrevuel          #+#    #+#             */
-/*   Updated: 2026/01/24 00:24:14 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/24 14:03:22 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,17 @@ static void	it_next(t_it *it)
 	if (!it->t || !it->p)
 		return ;
 	if (it->p->next)
-		return ((void)(it->p = it->p->next));
+	{
+		it->p = it->p->next;
+		return ;
+	}
 	it->t = it->t->next;
 	while (it->t && !it->t->parts)
 		it->t = it->t->next;
-	it->p = (it->t ? it->t->parts : NULL);
+	if (it->t)
+		it->p = it->t->parts;
+	else
+		it->p = NULL;
 }
 
 static void	init_cmd(t_command *c, size_t i, size_t total)
@@ -96,11 +102,13 @@ static void	count_seg(t_it it, size_t *wc, size_t *rc)
 			it_next(&it);
 			if (it.p)
 				it_next(&it);
-			continue ;
 		}
-		if (it.p->type == WORD)
-			(*wc)++;
-		it_next(&it);
+		else
+		{
+			if (it.p->type == WORD)
+				(*wc)++;
+			it_next(&it);
+		}
 	}
 }
 
@@ -113,7 +121,10 @@ static int	alloc_cmd(t_command *c, size_t wc, size_t rc)
 		return (0);
 	i = 0;
 	while (i < wc + 1)
-		c->argv[i++] = NULL;
+	{
+		c->argv[i] = NULL;
+		i++;
+	}
 	c->ios = NULL;
 	c->io_c = rc;
 	if (rc)
@@ -123,6 +134,32 @@ static int	alloc_cmd(t_command *c, size_t wc, size_t rc)
 			return (0);
 	}
 	return (1);
+}
+
+static void	fill_one_redir(t_it *it, t_command *c, size_t *ri)
+{
+	int	r;
+
+	r = 0;
+	r = redir_iotype(it->p->type);
+	c->ios[*ri].type = (t_iotype)r;
+	it_next(it);
+	c->ios[*ri].arg = ft_strdup(it->p->value);
+	c->ios[*ri].expand = 0;
+	if (r == IO_FILE_HEREDOC && it->p->origin == IN_DEFAULT)
+		c->ios[*ri].expand = 1;
+	(*ri)++;
+	it_next(it);
+}
+
+static void	fill_one_word(t_it *it, t_command *c, size_t *ai, size_t wc)
+{
+	if (it->p->type == WORD && *ai < wc)
+	{
+		c->argv[*ai] = ft_strdup(it->p->value);
+		(*ai)++;
+	}
+	it_next(it);
 }
 
 static int	fill_seg(t_it *it, t_command *c, size_t wc)
@@ -137,19 +174,9 @@ static int	fill_seg(t_it *it, t_command *c, size_t wc)
 	{
 		r = redir_iotype(it->p->type);
 		if (r != -1)
-		{
-			c->ios[ri].type = (t_iotype)r;
-			it_next(it);
-			c->ios[ri].arg = ft_strdup(it->p->value);
-			c->ios[ri].expand = (r == IO_FILE_HEREDOC
-					&& it->p->origin == IN_DEFAULT);
-			ri++;
-			it_next(it);
-			continue ;
-		}
-		if (it->p->type == WORD && ai < wc)
-			c->argv[ai++] = ft_strdup(it->p->value);
-		it_next(it);
+			fill_one_redir(it, c, &ri);
+		else
+			fill_one_word(it, c, &ai, wc);
 	}
 	c->argv[ai] = NULL;
 	return (1);
@@ -161,11 +188,17 @@ static void	free_one_cmd(t_command *c)
 
 	i = 0;
 	while (c->argv && c->argv[i])
-		free(c->argv[i++]);
+	{
+		free(c->argv[i]);
+		i++;
+	}
 	free(c->argv);
 	i = 0;
 	while (c->ios && i < c->io_c)
-		free(c->ios[i++].arg);
+	{
+		free(c->ios[i].arg);
+		i++;
+	}
 	free(c->ios);
 	free(c->resolved_path);
 }
@@ -176,7 +209,10 @@ static void	free_exec_partial(t_exec *e, size_t n)
 
 	i = 0;
 	while (i < n)
-		free_one_cmd(&e->cmds[i++]);
+	{
+		free_one_cmd(&e->cmds[i]);
+		i++;
+	}
 	free(e->cmds);
 	free(e);
 }
@@ -185,15 +221,21 @@ t_exec	*fill_exec(t_token *tokens)
 {
 	t_exec	*e;
 	t_it	it;
+	size_t	i;
+	size_t	wc;
+	size_t	rc;
 
-	size_t i, wc, rc;
+	e = NULL;
 	e = (t_exec *)malloc(sizeof(t_exec));
 	if (!e)
 		return (NULL);
 	e->cmd_c = count_cmds(tokens);
 	e->cmds = (t_command *)malloc(sizeof(t_command) * e->cmd_c);
 	if (!e->cmds)
-		return (free(e), NULL);
+	{
+		free(e);
+		return (NULL);
+	}
 	it_init(&it, tokens);
 	i = 0;
 	while (i < e->cmd_c)
@@ -210,3 +252,4 @@ t_exec	*fill_exec(t_token *tokens)
 	}
 	return (e);
 }
+

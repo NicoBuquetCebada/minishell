@@ -6,29 +6,13 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 00:09:24 by irrevuel          #+#    #+#             */
-/*   Updated: 2026/01/24 00:09:25 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/24 13:31:24 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "minishell.h"
 #include "parser.h"
-
-static int	is_delim(char *line, char *delim)
-{
-	return (line && delim && ft_strcmp(line, delim) == 0);
-}
-
-static int	write_ln(int fd, char *s)
-{
-	if (!s)
-		return (1);
-	if (write(fd, s, ft_strlen(s)) < 0)
-		return (0);
-	if (write(fd, "\n", 1) < 0)
-		return (0);
-	return (1);
-}
 
 static char	*mk_tmp_name(int n)
 {
