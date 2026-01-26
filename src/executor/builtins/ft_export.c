@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/24 22:58:26 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 00:28:33 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 21:26:55 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	ft_export(t_exec_ctx *ctx, char **argv)
 	status = 0;
 	i = 1;
 	if (!argv[i])
-		return (ft_env(ctx->envp), 0);
+		return (ft_env(ctx->envp, 1), 0);
 	while (argv[i])
 	{
 		if (!valid_key(argv[i]))

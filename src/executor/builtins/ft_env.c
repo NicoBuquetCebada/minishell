@@ -6,14 +6,14 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/07 14:22:39 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:41:01 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 21:24:05 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
 
-void	ft_env(char	**envp)
+void	ft_env(char	**envp, int export)
 {
 	size_t	i;
 	size_t	j;
@@ -33,5 +33,6 @@ void	ft_env(char	**envp)
 		}
 		i++;
 	}
-	exit(0);
+	if (!export)
+		exit(0);
 }

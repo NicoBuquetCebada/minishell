@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 21:45:54 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 22:35:58 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 20:56:49 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,28 @@ static int			out_of_range(int neg, unsigned long long num, int *error);
 
 int	ft_exit(t_exec_ctx *ctx, t_exec *exec, int child)
 {
-	int	status;
 	int	error;
 
 	error = 0;
-	if (exec->cmd_c == 1 && ctx->interactive)
+	if (!exec)
 		ft_putendl_fd("exit", 2);
-	if (!exec->cmds->argv || !exec->cmds->argv[1])
-		status = g_status;
 	else
 	{
-		status = get_status(exec->cmds->argv[1], &error);
-		if (error)
-			status = ft_error_msg("exit", exec->cmds->argv[1],
-					"numeric argument required", 2);
-		else if (exec->cmds->argv[2])
-			return (ft_error_msg("exit", NULL, "too many arguments", 1));
+		if (exec->cmd_c == 1 && ctx->interactive)
+			ft_putendl_fd("exit", 2);
+		else
+		{
+			g_status = get_status(exec->cmds->argv[1], &error);
+			if (error)
+				g_status = ft_error_msg("exit", exec->cmds->argv[1],
+						"numeric argument required", 2);
+			else if (exec->cmds->argv[2])
+				return (ft_error_msg("exit", NULL, "too many arguments", 1));
+		}
 	}
 	if (!child)
 		clean_shell(ctx, exec);
-	exit(status);
-	return (2);
+	return (exit(g_status), 2);
 }
 
 static int	get_status(char *arg, int *error)

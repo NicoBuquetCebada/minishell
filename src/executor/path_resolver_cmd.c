@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 19:31:20 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/19 19:41:46 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 22:01:49 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*resolve_cmd(char *cmd, char **envp)
 	pathenv_clean = get_pathenv(envp);
 	pathenv = pathenv_clean;
 	if (!pathenv || !*pathenv)
-		return (NULL);
+		return (exit(command_not_found_error(cmd)), NULL);
 	while (1)
 	{
 		next = ft_strchr(pathenv, ':');

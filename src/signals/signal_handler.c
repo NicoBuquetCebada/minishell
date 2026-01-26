@@ -6,14 +6,14 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/08 14:27:58 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 00:31:55 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 22:08:01 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
 
-void	handle_signals(t_exec_ctx *ctx, int status)
+void	handle_signals(int status)
 {
 	int	sigv;
 
@@ -29,4 +29,10 @@ void	restore_signals(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
+}
+
+void	ignore_signals(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
