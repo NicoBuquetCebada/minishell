@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:17:13 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 00:31:38 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 21:26:08 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void			update_read_fd(t_command *cmd, int *read_fd, int pipe_fd[2]);
 // Builtins
 void			ft_echo(char **argv);
 void			ft_pwd(void);
-void			ft_env(char **envp);
+void			ft_env(char **envp, int export);
 int				ft_unset(t_exec_ctx *ctx, char **argv);
 int				valid_key(char *key);
 int				ft_export(t_exec_ctx *ctx, char **argv);
@@ -152,8 +152,9 @@ int				cd_error(char *path);
 int				ft_exit(t_exec_ctx *ctx, t_exec *exec, int child);
 
 // Signal Handler
-void			handle_signals(t_exec_ctx *ctx, int status);
+void			handle_signals(int status);
 void			restore_signals(void);
+void			ignore_signals(void);
 
 // Other
 char			**dup_envp(char **envp);
@@ -162,5 +163,8 @@ char			*dup_cwd(void);
 void			clean_shell(t_exec_ctx *ctx, t_exec *exec);
 void			clean_ctx(t_exec_ctx *ctx);
 void			inc_level(t_exec_ctx *ctx);
+void			handle_sigint(int sig);
+void			signal_handlers(void);
+void			handle_eof(t_exec_ctx *ctx, char *line);
 
 #endif

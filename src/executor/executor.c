@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 16:31:07 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 00:32:40 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 21:10:13 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 static int		execute(t_exec_ctx *ctx, t_exec *exec);
 static pid_t	spawn_pipe(t_exec_ctx *ctx, t_exec *exec, t_command *cmd,
 					int *read_fd);
-static void		wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c);
+static void		wait_pids(pid_t *pids, size_t cmd_c);
 
 int	exec_caller(t_exec_ctx *ctx, t_exec *exec)
 {
+	ignore_signals();
 	if (execute(ctx, exec) == -1)
 	{
 		perror("minishell");
@@ -46,10 +47,10 @@ static int	execute(t_exec_ctx *ctx, t_exec *exec)
 			return (free(pids), exec_builtin(ctx, exec, exec->cmds[i].argv, 0));
 		pids[i] = spawn_pipe(ctx, exec, &exec->cmds[i], &read_fd);
 		if (pids[i] == -1)
-			return (wait_pids(ctx, pids, i), free(pids), -1);
+			return (wait_pids(pids, i), free(pids), -1);
 		i++;
 	}
-	wait_pids(ctx, pids, exec->cmd_c);
+	wait_pids(pids, exec->cmd_c);
 	free(pids);
 	return (0);
 }
@@ -78,7 +79,7 @@ static pid_t	spawn_pipe(t_exec_ctx *ctx, t_exec *exec, t_command *cmd,
 	return (pid);
 }
 
-static void	wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c)
+static void	wait_pids(pid_t *pids, size_t cmd_c)
 {
 	size_t	i;
 	int		status;
@@ -99,7 +100,7 @@ static void	wait_pids(t_exec_ctx *ctx, pid_t *pids, size_t cmd_c)
 			if (WIFEXITED(status))
 				g_status = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
-				handle_signals(ctx, status);
+				handle_signals(status);
 		}
 		i++;
 	}

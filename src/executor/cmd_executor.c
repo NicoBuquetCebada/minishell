@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 20:08:59 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 22:27:48 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 21:26:40 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child)
 	if (ft_strncmp("pwd", argv[0], len) == 0)
 		ft_pwd();
 	if (ft_strncmp("env", argv[0], len) == 0)
-		ft_env(ctx->envp);
+		ft_env(ctx->envp, 0);
 	if (ft_strncmp("unset", argv[0], len) == 0)
 		status = ft_unset(ctx, argv);
 	if (ft_strncmp("export", argv[0], len) == 0)
@@ -51,5 +51,6 @@ int	exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child)
 		status = ft_exit(ctx, exec, child);
 	if (child)
 		exit(status);
+	g_status = status;
 	return (status);
 }

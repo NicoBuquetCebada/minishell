@@ -181,5 +181,21 @@ void					free_exec(t_exec *e);
 void					cleanup_input(t_lexer *lex, t_token *tok, t_exec *exec);
 int						is_delim(char *line, char *delim);
 int						write_ln(int fd, char *s);
+int						redir_iotype(t_tokentype t);
+void					it_init(t_it *it, t_token *t);
+void					it_next(t_it *it);
+void					init_cmd(t_command *c, size_t i, size_t total);
+size_t					count_cmds(t_token *tokens);
+int						count_seg(t_it it, size_t *wc, size_t *rc);
+int						alloc_cmd(t_command *c, size_t wc, size_t rc);
+int						fill_redir(t_it *it, t_command *c, size_t *ri);
+int						fill_word(t_it *it, t_command *c, size_t *ai,
+							size_t wc);
+int						fill_seg(t_it *it, t_command *c, size_t wc);
+void					free_one_cmd(t_command *c);
+void					free_exec_partial(t_exec *e, size_t n);
+int						init_exec(t_exec **e, t_token *tokens);
+int						build_one_cmd(t_exec *e, t_it *it, size_t i);
+t_exec					*fill_exec(t_token *tokens);
 
 #endif

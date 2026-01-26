@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/25 21:39:17 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/25 22:47:11 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/26 20:53:02 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static void	free_array(char **v);
 
 void	clean_shell(t_exec_ctx *ctx, t_exec *exec)
 {
-	clean_exec(exec);
+	if (exec)
+		clean_exec(exec);
 	clean_ctx(ctx);
 }
 
