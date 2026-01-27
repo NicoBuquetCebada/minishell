@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_executor.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 20:08:59 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 21:26:40 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/27 23:07:02 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,23 @@ void	exec_cmd(t_exec_ctx *ctx, t_exec *exec, t_command *cmd)
 
 int	exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child)
 {
-	size_t	len;
 	int		status;
 
-	len = ft_strlen(argv[0]);
+	//len = ft_strlen(argv[0]);
 	status = 0;
-	if (ft_strncmp("echo", argv[0], len) == 0)
+	if (ft_strcmp("echo", argv[0]) == 0)
 		ft_echo(argv);
-	if (ft_strncmp("pwd", argv[0], len) == 0)
+	if (ft_strcmp("pwd", argv[0]) == 0)
 		ft_pwd();
-	if (ft_strncmp("env", argv[0], len) == 0)
+	if (ft_strcmp("env", argv[0]) == 0)
 		ft_env(ctx->envp, 0);
-	if (ft_strncmp("unset", argv[0], len) == 0)
+	if (ft_strcmp("unset", argv[0]) == 0)
 		status = ft_unset(ctx, argv);
-	if (ft_strncmp("export", argv[0], len) == 0)
+	if (ft_strcmp("export", argv[0]) == 0)
 		status = ft_export(ctx, argv);
-	if (ft_strncmp("cd", argv[0], len) == 0)
+	if (ft_strcmp("cd", argv[0]) == 0)
 		status = ft_cd(ctx, argv);
-	if (ft_strncmp("exit", argv[0], len) == 0)
+	if (ft_strcmp("exit", argv[0]) == 0)
 		status = ft_exit(ctx, exec, child);
 	if (child)
 		exit(status);

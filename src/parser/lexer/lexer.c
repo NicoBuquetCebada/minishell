@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 22:31:18 by irrevuel          #+#    #+#             */
-/*   Updated: 2026/01/23 22:35:30 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/27 23:16:58 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 
 static int	process_token(char *line, int i, t_lexer *nodes, t_lexer *aux)
 {
+	if (!aux)
+	{
+		free_lexed_line(nodes);
+		return (-1);
+	}
 	if (line[i] == '\'')
 		i = handle_mode(line, i, aux, IN_SQUOTE);
 	else if (line[i] == '"')
@@ -31,13 +36,27 @@ static int	process_token(char *line, int i, t_lexer *nodes, t_lexer *aux)
 
 static int	skip_spaces(char *line, int i, t_lexer **nodes, t_lexer **aux)
 {
-	while (line[i] && isspace((unsigned char)line[i]))
+	while (line[i] && ft_isspace((unsigned char)line[i]))
 		i++;
-	if (line[i])
-	{
-		add_node(nodes);
+	if (!line[i])
+		return (i);
+	add_node(nodes);
+	if (*aux && (*aux)->next)
 		*aux = (*aux)->next;
-	}
+	else
+		*aux = NULL;
+	return (i);
+}
+
+static int	skip_leading_spaces(char *line)
+{
+	int	i;
+
+	i = 0;
+	while (line[i] && ft_isspace((unsigned char)line[i]))
+		i++;
+	if (!line[i])
+		return (-1);
 	return (i);
 }
 
@@ -50,12 +69,14 @@ t_lexer	*lexer(char *line)
 	nodes = NULL;
 	if (!line)
 		return (NULL);
+	i = skip_leading_spaces(line);
+	if (i < 0)
+		return (NULL);
 	add_node(&nodes);
 	aux = nodes;
-	i = 0;
 	while (line[i])
 	{
-		if (isspace((unsigned char)line[i]))
+		if (ft_isspace((unsigned char)line[i]))
 			i = skip_spaces(line, i, &nodes, &aux);
 		else
 		{
@@ -66,3 +87,4 @@ t_lexer	*lexer(char *line)
 	}
 	return (nodes);
 }
+
