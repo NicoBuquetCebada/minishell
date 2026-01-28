@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/29 20:08:59 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/27 23:07:02 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/28 19:22:13 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ int	exec_builtin(t_exec_ctx *ctx, t_exec *exec, char **argv, int child)
 {
 	int		status;
 
-	//len = ft_strlen(argv[0]);
 	status = 0;
 	if (ft_strcmp("echo", argv[0]) == 0)
 		ft_echo(argv);

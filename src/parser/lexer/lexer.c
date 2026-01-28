@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 22:31:18 by irrevuel          #+#    #+#             */
-/*   Updated: 2026/01/27 23:16:58 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/28 19:21:50 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,3 @@ t_lexer	*lexer(char *line)
 	}
 	return (nodes);
 }
-

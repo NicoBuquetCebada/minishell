@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/02 21:19:28 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/27 00:15:30 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/28 19:21:31 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	run_interactive(t_exec_ctx *ctx)
 		handle_eof(ctx, line);
 		free(line);
 	}
-	//clear_history();
+	clear_history();
 }
 
 static void	run_noninteractive(t_exec_ctx *ctx)

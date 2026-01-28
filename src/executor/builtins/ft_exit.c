@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 21:45:54 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/28 17:27:25 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/28 19:28:01 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,8 @@ static long long	atoi_long_long(const char *str, int *error)
 
 static int	out_of_range(int neg, unsigned long long num, int *error)
 {
-	if ((neg == 1 && num > LONG_MAX) || (neg == -1 && num >
-			-(unsigned long)LONG_MIN))
+	if ((neg == 1 && num > LONG_MAX) || (neg == -1 && num
+			> -(unsigned long)LONG_MIN))
 		*error = 1;
 	return (*error);
 }

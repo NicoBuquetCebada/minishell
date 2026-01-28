@@ -6,7 +6,7 @@
 /*   By: irrevuel <irrevuel@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 19:52:48 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/27 00:15:18 by irrevuel         ###   ########.fr       */
+/*   Updated: 2026/01/28 19:21:14 by irrevuel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(STDIN_FILENO, "\n", 1);
-	//rl_replace_line("", 0);
+	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
