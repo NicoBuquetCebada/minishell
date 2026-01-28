@@ -6,7 +6,7 @@
 /*   By: nbuquet- <nbuquet-@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 21:45:54 by nbuquet-          #+#    #+#             */
-/*   Updated: 2026/01/26 20:56:49 by nbuquet-         ###   ########.fr       */
+/*   Updated: 2026/01/28 17:27:25 by nbuquet-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,19 @@ int	ft_exit(t_exec_ctx *ctx, t_exec *exec, int child)
 	int	error;
 
 	error = 0;
-	if (!exec)
+	if (ctx && ctx->interactive && exec && exec->cmd_c == 1 && !child)
 		ft_putendl_fd("exit", 2);
-	else
+	if (exec && exec->cmds && exec->cmds->argv && exec->cmds->argv[1])
 	{
-		if (exec->cmd_c == 1 && ctx->interactive)
-			ft_putendl_fd("exit", 2);
-		else
+		g_status = get_status(exec->cmds->argv[1], &error);
+		if (error)
+			g_status = ft_error_msg("exit", exec->cmds->argv[1],
+					"numeric argument required", 2);
+		else if (exec->cmds->argv[2])
 		{
-			g_status = get_status(exec->cmds->argv[1], &error);
-			if (error)
-				g_status = ft_error_msg("exit", exec->cmds->argv[1],
-						"numeric argument required", 2);
-			else if (exec->cmds->argv[2])
-				return (ft_error_msg("exit", NULL, "too many arguments", 1));
+			g_status = ft_error_msg("exit", NULL, "too many arguments", 1);
+			if (!child)
+				return (g_status);
 		}
 	}
 	if (!child)
@@ -98,8 +97,8 @@ static long long	atoi_long_long(const char *str, int *error)
 
 static int	out_of_range(int neg, unsigned long long num, int *error)
 {
-	if ((neg == 1 && num > LONG_MAX)
-		|| (neg == -1 && num > -(unsigned long)LONG_MIN))
+	if ((neg == 1 && num > LONG_MAX) || (neg == -1 && num >
+			-(unsigned long)LONG_MIN))
 		*error = 1;
 	return (*error);
 }
