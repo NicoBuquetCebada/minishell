@@ -42,7 +42,6 @@ static void	run_interactive(t_exec_ctx *ctx)
 		handle_eof(ctx, line);
 		free(line);
 	}
-	clear_history();
 }
 
 static void	run_noninteractive(t_exec_ctx *ctx)
